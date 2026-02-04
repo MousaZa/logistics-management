@@ -11,7 +11,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -27,7 +26,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OrdersServiceClient interface {
-	UpdateStatus(ctx context.Context, in *NewStatus, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	UpdateStatus(ctx context.Context, in *UpdateStatusRequest, opts ...grpc.CallOption) (*UpdateStatusResponse, error)
 }
 
 type ordersServiceClient struct {
@@ -38,9 +37,9 @@ func NewOrdersServiceClient(cc grpc.ClientConnInterface) OrdersServiceClient {
 	return &ordersServiceClient{cc}
 }
 
-func (c *ordersServiceClient) UpdateStatus(ctx context.Context, in *NewStatus, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+func (c *ordersServiceClient) UpdateStatus(ctx context.Context, in *UpdateStatusRequest, opts ...grpc.CallOption) (*UpdateStatusResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(emptypb.Empty)
+	out := new(UpdateStatusResponse)
 	err := c.cc.Invoke(ctx, OrdersService_UpdateStatus_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -52,7 +51,7 @@ func (c *ordersServiceClient) UpdateStatus(ctx context.Context, in *NewStatus, o
 // All implementations should embed UnimplementedOrdersServiceServer
 // for forward compatibility.
 type OrdersServiceServer interface {
-	UpdateStatus(context.Context, *NewStatus) (*emptypb.Empty, error)
+	UpdateStatus(context.Context, *UpdateStatusRequest) (*UpdateStatusResponse, error)
 }
 
 // UnimplementedOrdersServiceServer should be embedded to have
@@ -62,7 +61,7 @@ type OrdersServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedOrdersServiceServer struct{}
 
-func (UnimplementedOrdersServiceServer) UpdateStatus(context.Context, *NewStatus) (*emptypb.Empty, error) {
+func (UnimplementedOrdersServiceServer) UpdateStatus(context.Context, *UpdateStatusRequest) (*UpdateStatusResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method UpdateStatus not implemented")
 }
 func (UnimplementedOrdersServiceServer) testEmbeddedByValue() {}
@@ -86,7 +85,7 @@ func RegisterOrdersServiceServer(s grpc.ServiceRegistrar, srv OrdersServiceServe
 }
 
 func _OrdersService_UpdateStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(NewStatus)
+	in := new(UpdateStatusRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -98,7 +97,7 @@ func _OrdersService_UpdateStatus_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: OrdersService_UpdateStatus_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OrdersServiceServer).UpdateStatus(ctx, req.(*NewStatus))
+		return srv.(OrdersServiceServer).UpdateStatus(ctx, req.(*UpdateStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

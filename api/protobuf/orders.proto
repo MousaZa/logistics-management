@@ -4,12 +4,27 @@ package orders;
 
 option go_package = "github.com/MousaZa/logistics-management/internal/orders";
 
-import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
-service OrdersService {
-  rpc UpdateStatus(NewStatus) returns (google.protobuf.Empty) {}
+enum OrderStatus {
+  ORDER_STATUS_PENDING = 0;
+  ORDER_STATUS_CONFIRMED = 1;
+  ORDER_STATUS_SHIPPED = 2;
+  ORDER_STATUS_DELIVERED = 3;
+  ORDER_STATUS_CANCELLED = 4;
 }
 
-message NewStatus {
-  string status = 1;
+service OrdersService {
+  rpc UpdateStatus(UpdateStatusRequest) returns (UpdateStatusResponse) {}
+}
+
+message UpdateStatusRequest {
+  string order_id = 1;
+  OrderStatus status = 2;
+}
+
+message UpdateStatusResponse {
+  string order_id = 1;
+  OrderStatus current_status = 2;
+  google.protobuf.Timestamp updated_at = 3;
 }

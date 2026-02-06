@@ -29,8 +29,8 @@ type Error struct {
 type LineItem struct {
 	LineTotal   float32            `json:"lineTotal"`
 	LineWeight  float32            `json:"lineWeight"`
-	ProductId   openapi_types.UUID `json:"productId"`
 	ProductName string             `json:"productName"`
+	ProductUUID openapi_types.UUID `json:"productUUID"`
 	Quantity    int                `json:"quantity"`
 	UnitPrice   float32            `json:"unitPrice"`
 	UnitWeight  float32            `json:"unitWeight"`
@@ -41,8 +41,8 @@ type Order struct {
 	CompletedDate *time.Time         `json:"completedDate"`
 	DeliveredDate *time.Time         `json:"deliveredDate"`
 	LineItems     []LineItem         `json:"lineItems"`
-	OrderId       openapi_types.UUID `json:"orderId"`
 	OrderTotal    float32            `json:"orderTotal"`
+	OrderUUID     openapi_types.UUID `json:"orderUUID"`
 	OrderedDate   *time.Time         `json:"orderedDate,omitempty"`
 	ShippedDate   *time.Time         `json:"shippedDate"`
 	Status        OrderStatus        `json:"status"`

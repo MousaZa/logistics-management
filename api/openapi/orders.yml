@@ -117,9 +117,9 @@ components:
   schemas:
     LineItem:
       type: object
-      required: [productId, productName, quantity, unitPrice, lineTotal, unitWeight, lineWeight]
+      required: [productUUID, productName, quantity, unitPrice, lineTotal, unitWeight, lineWeight]
       properties:
-        productId:
+        productUUID:
           type: string
           format: uuid
         productName:
@@ -137,9 +137,12 @@ components:
 
     Order:
       type: object
-      required: [orderId, lineItems, orderTotal, weight, status]
+      required: [orderUUID, placedBy, lineItems, orderTotal, weight, status]
       properties:
-        orderId:
+        orderUUID:
+          type: string
+          format: uuid
+        placedBy:
           type: string
           format: uuid
         lineItems:

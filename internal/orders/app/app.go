@@ -8,7 +8,7 @@ type Application struct {
 }
 
 type Commands struct {
-	NewOrder command.NewOrderHandler
+	NewOrder command.PlaceOrderHandler
 }
 
 type Queries struct {

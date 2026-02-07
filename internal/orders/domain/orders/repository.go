@@ -1,4 +1,4 @@
-package domain
+package orders
 
 import (
 	"context"
@@ -19,7 +19,7 @@ type Repository interface {
 	GetAllOrders(ctx context.Context) ([]Order, error)
 	UpdateOrder(
 		ctx context.Context,
-		o *Order,
-		updateFunc func(ctx context.Context, tr *Order) (*Order, error),
+		orderUUID string,
+		updateFunc func(ctx context.Context, o *Order) (*Order, error),
 	) error
 }

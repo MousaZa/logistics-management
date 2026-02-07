@@ -2,7 +2,6 @@ package command
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/MousaZa/logistics-management/internal/common/errors"
 	"github.com/MousaZa/logistics-management/internal/orders/domain/orders"
@@ -26,7 +25,7 @@ func (h *ConfirmOrderHandler) Handle(ctx context.Context, cmd *ConfirmOrder) err
 		}
 		return o, nil
 	}); err != nil {
-		return errors.NewSlugError(err, "confirm_order", http.StatusBadRequest)
+		return errors.NewSlugError(err.Error(), "unable-to-update-order")
 	}
 	return nil
 }

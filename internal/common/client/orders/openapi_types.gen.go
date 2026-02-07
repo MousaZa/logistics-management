@@ -44,6 +44,7 @@ type Order struct {
 	OrderTotal    float32            `json:"orderTotal"`
 	OrderUUID     openapi_types.UUID `json:"orderUUID"`
 	OrderedDate   *time.Time         `json:"orderedDate,omitempty"`
+	PlacedBy      openapi_types.UUID `json:"placedBy"`
 	ShippedDate   *time.Time         `json:"shippedDate"`
 	Status        OrderStatus        `json:"status"`
 	Weight        float32            `json:"weight"`

@@ -8,11 +8,12 @@ import (
 )
 
 type PlaceOrder struct {
-	LineItems  []orders.LineItem
-	OrderUUID  string
-	PlacedBy   string
-	Weight     float32
-	OrderTotal float32
+	LineItems   []orders.LineItem
+	OrderUUID   string
+	PlacedBy    string
+	Weight      float32
+	OrderTotal  float32
+	Destination string
 }
 
 type OrderPlacedEvent struct {
@@ -25,12 +26,12 @@ type PlaceOrderHandler struct {
 	repo     orders.Repository
 }
 
-func NewPlaceOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository) *PlaceOrderHandler {
-	return &PlaceOrderHandler{eventBus: eventBus, repo: repo}
+func NewPlaceOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository) PlaceOrderHandler {
+	return PlaceOrderHandler{eventBus: eventBus, repo: repo}
 }
 
 func (h *PlaceOrderHandler) Handle(ctx context.Context, cmd *PlaceOrder) error {
-	order, err := orders.NewOrder(cmd.OrderUUID, cmd.PlacedBy, cmd.LineItems, cmd.Weight, cmd.OrderTotal)
+	order, err := orders.NewOrder(cmd.OrderUUID, cmd.PlacedBy, cmd.LineItems, cmd.Weight, cmd.OrderTotal, cmd.Destination)
 	if err != nil {
 		return err
 	}

@@ -37,9 +37,10 @@ type Order struct {
 	ShippedDate   time.Time
 	Status        OrderStatus
 	Weight        float32
+	Destination   string
 }
 
-func NewOrder(orderUUID string, placedBy string, lineItems []LineItem, orderTotal float32, weight float32) (*Order, error) {
+func NewOrder(orderUUID string, placedBy string, lineItems []LineItem, orderTotal float32, weight float32, destination string) (*Order, error) {
 	if orderUUID == "" {
 		return nil, errors.New("empty orderUUID")
 	}
@@ -55,6 +56,9 @@ func NewOrder(orderUUID string, placedBy string, lineItems []LineItem, orderTota
 	if weight == 0 {
 		return nil, errors.New("empty orderWeight")
 	}
+	if destination == "" {
+		return nil, errors.New("empty destination")
+	}
 
 	return &Order{
 		OrderUUID:   orderUUID,
@@ -64,6 +68,7 @@ func NewOrder(orderUUID string, placedBy string, lineItems []LineItem, orderTota
 		Weight:      weight,
 		OrderTotal:  orderTotal,
 		Status:      Pending,
+		Destination: destination,
 	}, nil
 }
 

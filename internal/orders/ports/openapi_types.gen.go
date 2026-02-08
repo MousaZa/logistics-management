@@ -40,6 +40,7 @@ type LineItem struct {
 type Order struct {
 	CompletedDate *time.Time         `json:"completedDate"`
 	DeliveredDate *time.Time         `json:"deliveredDate"`
+	Destination   string             `json:"destination"`
 	LineItems     []LineItem         `json:"lineItems"`
 	OrderTotal    float32            `json:"orderTotal"`
 	OrderUUID     openapi_types.UUID `json:"orderUUID"`

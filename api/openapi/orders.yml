@@ -137,7 +137,7 @@ components:
 
     Order:
       type: object
-      required: [orderUUID, placedBy, lineItems, orderTotal, weight, status]
+      required: [orderUUID, placedBy, lineItems, orderTotal, weight, status, destination]
       properties:
         orderUUID:
           type: string
@@ -156,6 +156,8 @@ components:
         status:
           type: string
           enum: [ pending, confirmed, shipped, delivered, completed, cancelled ]
+        destination:
+          type: string
         orderedDate:
           type: string
           format: date-time

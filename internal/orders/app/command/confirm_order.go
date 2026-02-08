@@ -17,6 +17,10 @@ type ConfirmOrderHandler struct {
 	repo     orders.Repository
 }
 
+func NewConfirmOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository) ConfirmOrderHandler {
+	return ConfirmOrderHandler{eventBus: eventBus, repo: repo}
+}
+
 func (h *ConfirmOrderHandler) Handle(ctx context.Context, cmd *ConfirmOrder) error {
 	if err := h.repo.UpdateOrder(ctx, cmd.orderUUID, func(ctx context.Context, o *orders.Order) (*orders.Order, error) {
 		err := o.UpdateStatus(orders.Confirmed)

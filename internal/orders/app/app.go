@@ -1,6 +1,9 @@
 package app
 
-import "github.com/MousaZa/logistics-management/internal/orders/app/command"
+import (
+	"github.com/MousaZa/logistics-management/internal/orders/app/command"
+	"github.com/MousaZa/logistics-management/internal/orders/app/query"
+)
 
 type Application struct {
 	Commands Commands
@@ -8,8 +11,10 @@ type Application struct {
 }
 
 type Commands struct {
-	NewOrder command.PlaceOrderHandler
+	PlaceOrder   command.PlaceOrderHandler
+	ConfirmOrder command.ConfirmOrderHandler
 }
 
 type Queries struct {
+	AllOrders query.AllOrdersHandler
 }

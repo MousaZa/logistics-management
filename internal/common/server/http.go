@@ -3,6 +3,7 @@ package server
 import (
 	"net/http"
 
+	"github.com/MousaZa/logistics-management/internal/common/logs"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -31,7 +32,7 @@ func RunHTTPServerOnAddr(addr string, createHandler func(router chi.Router) http
 func setMiddlewares(router *chi.Mux) {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.RealIP)
-	// TODO: configure the logger
+	router.Use(logs.NewStructuredLogger(logrus.StandardLogger()))
 	router.Use(middleware.Recoverer)
 
 	addCorsMiddleware(router)

@@ -3,9 +3,9 @@ module github.com/MousaZa/logistics-management/internal/orders
 go 1.25.6
 
 require (
-	github.com/MousaZa/logistics-management/internal/common v0.0.0-20260207122818-31cc1e3bc087
+	github.com/MousaZa/logistics-management/internal/common v0.0.0-20260208164655-390d1add8cff
 	github.com/ThreeDotsLabs/watermill v1.4.3
-	github.com/go-chi/chi/v5 v5.1.0
+	github.com/go-chi/chi/v5 v5.2.5
 	github.com/oapi-codegen/runtime v1.1.2
 )
 
@@ -18,4 +18,6 @@ require (
 	github.com/lithammer/shortuuid/v3 v3.0.7 // indirect
 	github.com/oklog/ulid v1.3.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/sirupsen/logrus v1.8.1 // indirect
+	golang.org/x/sys v0.38.0 // indirect
 )

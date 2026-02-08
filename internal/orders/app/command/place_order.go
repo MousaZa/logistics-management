@@ -3,8 +3,10 @@ package command
 import (
 	"context"
 
+	"github.com/MousaZa/logistics-management/internal/common/decorator"
 	"github.com/MousaZa/logistics-management/internal/orders/domain/orders"
 	"github.com/ThreeDotsLabs/watermill/components/cqrs"
+	"github.com/sirupsen/logrus"
 )
 
 type PlaceOrder struct {
@@ -21,16 +23,18 @@ type OrderPlacedEvent struct {
 	ProductsUUIDs []string
 }
 
-type PlaceOrderHandler struct {
+type PlaceOrderHandler decorator.CommandHandler[PlaceOrder]
+
+type placeOrderHandler struct {
 	eventBus *cqrs.EventBus
 	repo     orders.Repository
 }
 
-func NewPlaceOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository) PlaceOrderHandler {
-	return PlaceOrderHandler{eventBus: eventBus, repo: repo}
+func NewPlaceOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository, logger *logrus.Entry) PlaceOrderHandler {
+	return decorator.ApplyCommandDecorators[PlaceOrder](placeOrderHandler{eventBus: eventBus, repo: repo}, logger)
 }
 
-func (h *PlaceOrderHandler) Handle(ctx context.Context, cmd *PlaceOrder) error {
+func (h placeOrderHandler) Handle(ctx context.Context, cmd PlaceOrder) error {
 	order, err := orders.NewOrder(cmd.OrderUUID, cmd.PlacedBy, cmd.LineItems, cmd.Weight, cmd.OrderTotal, cmd.Destination)
 	if err != nil {
 		return err

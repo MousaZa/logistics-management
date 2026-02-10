@@ -11,7 +11,6 @@ import (
 
 type PlaceOrder struct {
 	LineItems   []orders.LineItem
-	OrderUUID   string
 	PlacedBy    string
 	Weight      float32
 	OrderTotal  float32
@@ -35,7 +34,7 @@ func NewPlaceOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository, logge
 }
 
 func (h placeOrderHandler) Handle(ctx context.Context, cmd PlaceOrder) error {
-	order, err := orders.NewOrder(cmd.OrderUUID, cmd.PlacedBy, cmd.LineItems, cmd.Weight, cmd.OrderTotal, cmd.Destination)
+	order, err := orders.NewOrder(cmd.PlacedBy, cmd.LineItems, cmd.Weight, cmd.OrderTotal, cmd.Destination)
 	if err != nil {
 		return err
 	}
@@ -45,12 +44,12 @@ func (h placeOrderHandler) Handle(ctx context.Context, cmd PlaceOrder) error {
 		return err
 	}
 
-	productsUUIDs := productsUUIDsFromLineItems(cmd.LineItems)
+	//productsUUIDs := productsUUIDsFromLineItems(cmd.LineItems)
 
-	err = h.eventBus.Publish(ctx, &OrderPlacedEvent{OrderUUID: cmd.OrderUUID, ProductsUUIDs: productsUUIDs})
-	if err != nil {
-		return err
-	}
+	//err = h.eventBus.Publish(ctx, &OrderPlacedEvent{OrderUUID: order.OrderUUID, ProductsUUIDs: productsUUIDs})
+	//if err != nil {
+	//	return err
+	//}
 
 	return nil
 }

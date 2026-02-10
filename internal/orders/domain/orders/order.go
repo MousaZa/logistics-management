@@ -3,6 +3,8 @@ package orders
 import (
 	"errors"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type OrderStatus string
@@ -40,10 +42,7 @@ type Order struct {
 	Destination   string
 }
 
-func NewOrder(orderUUID string, placedBy string, lineItems []LineItem, orderTotal float32, weight float32, destination string) (*Order, error) {
-	if orderUUID == "" {
-		return nil, errors.New("empty orderUUID")
-	}
+func NewOrder(placedBy string, lineItems []LineItem, orderTotal float32, weight float32, destination string) (*Order, error) {
 	if placedBy == "" {
 		return nil, errors.New("empty placedBy")
 	}
@@ -59,9 +58,12 @@ func NewOrder(orderUUID string, placedBy string, lineItems []LineItem, orderTota
 	if destination == "" {
 		return nil, errors.New("empty destination")
 	}
-
+	orderUUID, err := uuid.NewRandom()
+	if err != nil {
+		return nil, err
+	}
 	return &Order{
-		OrderUUID:   orderUUID,
+		OrderUUID:   orderUUID.String(),
 		PlacedBy:    placedBy,
 		LineItems:   lineItems,
 		OrderedDate: time.Now(),

@@ -1,10 +1,13 @@
 package ports
 
 import (
+	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/MousaZa/logistics-management/internal/common/server/httperr"
 	"github.com/MousaZa/logistics-management/internal/orders/app"
+	"github.com/MousaZa/logistics-management/internal/orders/app/command"
 	"github.com/MousaZa/logistics-management/internal/orders/app/query"
 	"github.com/MousaZa/logistics-management/internal/orders/domain/orders"
 	"github.com/go-chi/render"
@@ -71,8 +74,21 @@ func orderDataToResponse(data []*orders.Order) (Orders, error) {
 }
 
 func (h HttpServer) CreateOrder(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	var o Order
+	d, err := io.ReadAll(r.Body)
+	if err != nil {
+		httperr.BadRequest("unable-to-read", err, w, r)
+	}
+	defer r.Body.Close()
+	err = json.Unmarshal(d, &o)
+	if err != nil {
+		httperr.BadRequest("unable-to-read", err, w, r)
+	}
+	err = h.app.Commands.PlaceOrder.Handle(r.Context(), command.PlaceOrder{OrderTotal: o.OrderTotal, PlacedBy: o.PlacedBy.String(), Weight: o.Weight, Destination: o.Destination})
+	if err != nil {
+		httperr.InternalError("unable-to-create", err, w, r)
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h HttpServer) GetOrderById(w http.ResponseWriter, r *http.Request, orderUUID openapi_types.UUID) {

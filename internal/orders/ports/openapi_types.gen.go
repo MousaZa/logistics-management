@@ -56,7 +56,7 @@ type OrderStatus string
 
 // Orders defines model for Orders.
 type Orders struct {
-	Trainings *[]Order `json:"trainings,omitempty"`
+	Orders []Order `json:"orders"`
 }
 
 // GetOrdersParams defines parameters for GetOrders.

@@ -178,7 +178,7 @@ components:
       type: object
       required: [ orders ]
       properties:
-        trainings:
+        orders:
           type: array
           items:
             $ref: '#/components/schemas/Order'

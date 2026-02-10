@@ -2,11 +2,15 @@ package query
 
 import (
 	"context"
+	"time"
 
 	"github.com/MousaZa/logistics-management/internal/orders/domain/orders"
 )
 
-type AllOrders struct{}
+type AllOrders struct {
+	DateFrom time.Time
+	DateTo   time.Time
+}
 
 type AllOrdersHandler struct {
 	readModel AllOrdersReadModel

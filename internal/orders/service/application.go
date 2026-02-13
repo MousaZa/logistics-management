@@ -22,7 +22,8 @@ func NewApplication(_ context.Context) app.Application {
 			ConfirmOrder: command.NewConfirmOrderHandler(nil, ordersRepository, logger),
 		},
 		Queries: app.Queries{
-			AllOrders: query.NewAllOrdersHandler(ordersRepository),
+			AllOrders: query.NewAllOrdersHandler(ordersRepository, logger),
+			OrderById: query.NewOrderByIdHandler(ordersRepository, logger),
 		},
 	}
 }

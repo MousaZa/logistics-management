@@ -17,4 +17,5 @@ type Commands struct {
 
 type Queries struct {
 	AllOrders query.AllOrdersHandler
+	OrderById query.OrderByIdHandler
 }

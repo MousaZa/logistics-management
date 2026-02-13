@@ -79,7 +79,12 @@ func (h HttpServer) CreateOrder(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		httperr.BadRequest("unable-to-read", err, w, r)
 	}
-	defer r.Body.Close()
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			httperr.InternalError("unable-to-close", err, w, r)
+		}
+	}(r.Body)
 	err = json.Unmarshal(d, &o)
 	if err != nil {
 		httperr.BadRequest("unable-to-read", err, w, r)

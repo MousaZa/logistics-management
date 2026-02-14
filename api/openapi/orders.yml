@@ -23,13 +23,13 @@ paths:
           schema:
             type: string
             format: date-time
-          required: true
+          required: false
         - in: query
           name: dateTo
           schema:
             type: string
             format: date-time
-          required: true
+          required: false
       responses:
         '200':
           description: todo
@@ -117,11 +117,10 @@ components:
   schemas:
     LineItem:
       type: object
-      required: [productUUID, productName, quantity, unitPrice, lineTotal, unitWeight, lineWeight]
+      required: [productName, quantity, unitPrice, lineTotal, unitWeight, lineWeight]
       properties:
         productUUID:
           type: string
-          format: uuid
         productName:
           type: string
         quantity:
@@ -137,14 +136,12 @@ components:
 
     Order:
       type: object
-      required: [orderUUID, placedBy, lineItems, orderTotal, weight, status, destination]
+      required: [placedBy, lineItems, orderTotal, weight, status, destination]
       properties:
         orderUUID:
           type: string
-          format: uuid
         placedBy:
           type: string
-          format: uuid
         lineItems:
           type: array
           items:

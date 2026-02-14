@@ -69,31 +69,17 @@ func (siw *ServerInterfaceWrapper) GetOrders(w http.ResponseWriter, r *http.Requ
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetOrdersParams
 
-	// ------------- Required query parameter "dateFrom" -------------
+	// ------------- Optional query parameter "dateFrom" -------------
 
-	if paramValue := r.URL.Query().Get("dateFrom"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "dateFrom"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "dateFrom", r.URL.Query(), &params.DateFrom)
+	err = runtime.BindQueryParameter("form", true, false, "dateFrom", r.URL.Query(), &params.DateFrom)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "dateFrom", Err: err})
 		return
 	}
 
-	// ------------- Required query parameter "dateTo" -------------
+	// ------------- Optional query parameter "dateTo" -------------
 
-	if paramValue := r.URL.Query().Get("dateTo"); paramValue != "" {
-
-	} else {
-		siw.ErrorHandlerFunc(w, r, &RequiredParamError{ParamName: "dateTo"})
-		return
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "dateTo", r.URL.Query(), &params.DateTo)
+	err = runtime.BindQueryParameter("form", true, false, "dateTo", r.URL.Query(), &params.DateTo)
 	if err != nil {
 		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "dateTo", Err: err})
 		return

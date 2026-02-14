@@ -5,8 +5,6 @@ package orders
 
 import (
 	"time"
-
-	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
 // Defines values for OrderStatus.
@@ -27,28 +25,28 @@ type Error struct {
 
 // LineItem defines model for LineItem.
 type LineItem struct {
-	LineTotal   float32            `json:"lineTotal"`
-	LineWeight  float32            `json:"lineWeight"`
-	ProductName string             `json:"productName"`
-	ProductUUID openapi_types.UUID `json:"productUUID"`
-	Quantity    int                `json:"quantity"`
-	UnitPrice   float32            `json:"unitPrice"`
-	UnitWeight  float32            `json:"unitWeight"`
+	LineTotal   float32 `json:"lineTotal"`
+	LineWeight  float32 `json:"lineWeight"`
+	ProductName string  `json:"productName"`
+	ProductUUID *string `json:"productUUID,omitempty"`
+	Quantity    int     `json:"quantity"`
+	UnitPrice   float32 `json:"unitPrice"`
+	UnitWeight  float32 `json:"unitWeight"`
 }
 
 // Order defines model for Order.
 type Order struct {
-	CompletedDate *time.Time         `json:"completedDate"`
-	DeliveredDate *time.Time         `json:"deliveredDate"`
-	Destination   string             `json:"destination"`
-	LineItems     []LineItem         `json:"lineItems"`
-	OrderTotal    float32            `json:"orderTotal"`
-	OrderUUID     openapi_types.UUID `json:"orderUUID"`
-	OrderedDate   *time.Time         `json:"orderedDate,omitempty"`
-	PlacedBy      openapi_types.UUID `json:"placedBy"`
-	ShippedDate   *time.Time         `json:"shippedDate"`
-	Status        OrderStatus        `json:"status"`
-	Weight        float32            `json:"weight"`
+	CompletedDate *time.Time  `json:"completedDate"`
+	DeliveredDate *time.Time  `json:"deliveredDate"`
+	Destination   string      `json:"destination"`
+	LineItems     []LineItem  `json:"lineItems"`
+	OrderTotal    float32     `json:"orderTotal"`
+	OrderUUID     *string     `json:"orderUUID,omitempty"`
+	OrderedDate   *time.Time  `json:"orderedDate,omitempty"`
+	PlacedBy      string      `json:"placedBy"`
+	ShippedDate   *time.Time  `json:"shippedDate"`
+	Status        OrderStatus `json:"status"`
+	Weight        float32     `json:"weight"`
 }
 
 // OrderStatus defines model for Order.Status.
@@ -61,8 +59,8 @@ type Orders struct {
 
 // GetOrdersParams defines parameters for GetOrders.
 type GetOrdersParams struct {
-	DateFrom time.Time `form:"dateFrom" json:"dateFrom"`
-	DateTo   time.Time `form:"dateTo" json:"dateTo"`
+	DateFrom *time.Time `form:"dateFrom,omitempty" json:"dateFrom,omitempty"`
+	DateTo   *time.Time `form:"dateTo,omitempty" json:"dateTo,omitempty"`
 }
 
 // CreateOrderJSONRequestBody defines body for CreateOrder for application/json ContentType.

@@ -21,7 +21,7 @@ CREATE TABLE orders (
 
     -- Timestamps
     ordered_date TIMESTAMPTZ NOT NULL,
-    shipped_date TIMESTAMPTZ,   -- Nullable because it might not be shipped yet
+    shipped_date TIMESTAMPTZ,   -- Nullable because it might no`t be shipped yet
     delivered_date TIMESTAMPTZ, -- Nullable
     completed_date TIMESTAMPTZ  -- Nullable
 );

@@ -1,0 +1,180 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Logistics Management inventory
+  description: TODO
+  contact:
+    name: Mousa Zeydan
+    email: mous.zeydan@gmail.com
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: localhost
+#security:
+#  - bearerAuth: []
+paths:
+  /locations:
+    get:
+      operationId: getLocations
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Locations'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      operationId: createLocation
+      requestBody:
+        description: todo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        '204':
+          description: todo
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /locations/{locationUUID}/contents:
+    get:
+      operationId: getLocationContents
+      parameters:
+        - in: path
+          name: locationUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Products'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /locations/transfer:
+    put:
+      operationId: transferProducts
+      requestBody:
+        description: todo
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ sourceLocationUUID, destinationLocationUUID, products ]
+              properties:
+                sourceLocationUUID:
+                  type: string
+                  format: uuid
+                destinationLocationUUID:
+                  type: string
+                  format: uuid
+                products:
+                  type: array
+                  items:
+                    type: object
+                    required: [ productUUID, quantity ]
+                    properties:
+                      productUUID:
+                        type: string
+                        format: uuid
+                      quantity:
+                        type: integer
+      responses:
+        '204':
+          description: todo
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  #  securitySchemes:
+  #    bearerAuth:
+  #      type: http
+  #      scheme: bearer
+  #      bearerFormat: JWT
+  schemas:
+    Product:
+      type: object
+      required: [name, price, weight, availableQuantity, locationUUID]
+      properties:
+        itemUUID:
+          type: string
+        name:
+          type: string
+        availableQuantity:
+          type: integer
+        weight:
+          type: number
+        price:
+          type: number
+        locationUUID:
+          type: string
+
+    Location:
+      type: object
+      required: [name, city, address]
+      properties:
+        locationUUID:
+          type: string
+        name:
+          type: string
+        city:
+          type: string
+        address:
+          type: string
+
+    Products:
+      type: object
+      required: [ products ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+
+    Locations:
+      type: object
+      required: [ locations ]
+      properties:
+        locations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+
+    Error:
+      type: object
+      required:
+        - slug
+        - message
+      properties:
+        slug:
+          type: string
+        message:
+          type: string

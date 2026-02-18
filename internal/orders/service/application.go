@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/MousaZa/logistics-management/internal/orders/adapters"
+	"github.com/MousaZa/logistics-management/internal/orders/adapters/postgres"
 	"github.com/MousaZa/logistics-management/internal/orders/app"
 	"github.com/MousaZa/logistics-management/internal/orders/app/command"
 	"github.com/MousaZa/logistics-management/internal/orders/app/query"
@@ -14,12 +14,12 @@ func NewApplication(ctx context.Context) app.Application {
 
 	//ordersRepository := adapters.NewOrderMemoryRepository()
 
-	conn, err := adapters.NewPostgresConnection(ctx)
+	conn, err := postgres.NewPostgresConnection(ctx)
 	if err != nil {
 		panic(err)
 	}
 
-	ordersRepository := adapters.NewPostgresOrderRepository(conn)
+	ordersRepository := postgres.NewPostgresOrderRepository(conn)
 
 	logger := logrus.NewEntry(logrus.StandardLogger())
 

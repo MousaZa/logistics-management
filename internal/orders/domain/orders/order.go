@@ -19,19 +19,19 @@ const (
 )
 
 type LineItem struct {
-	LineTotal   float32
-	LineWeight  float32
-	ProductName string
-	ProductUUID string
-	Quantity    int
-	UnitPrice   float32
-	UnitWeight  float32
+	LineTotal   float32 `json:"line_total"`
+	LineWeight  float32 `json:"line_weight"`
+	ProductName string  `json:"product_name"`
+	ProductUUID string  `json:"product_uuid"`
+	Quantity    int     `json:"quantity"`
+	UnitPrice   float32 `json:"unit_price"`
+	UnitWeight  float32 `json:"unit_weight"`
 }
 
 type Order struct {
 	CompletedDate time.Time
 	DeliveredDate time.Time
-	LineItems     []LineItem
+	LineItems     []LineItem `db:"line_items" json:"line_items"`
 	OrderTotal    float32
 	OrderUUID     string
 	PlacedBy      string

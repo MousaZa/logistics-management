@@ -17,11 +17,6 @@ type PlaceOrder struct {
 	Destination string
 }
 
-type OrderPlacedEvent struct {
-	OrderUUID     string
-	ProductsUUIDs []string
-}
-
 type PlaceOrderHandler decorator.CommandHandler[PlaceOrder]
 
 type placeOrderHandler struct {
@@ -44,20 +39,12 @@ func (h placeOrderHandler) Handle(ctx context.Context, cmd PlaceOrder) error {
 		return err
 	}
 
-	//productsUUIDs := productsUUIDsFromLineItems(cmd.LineItems)
-
-	//err = h.eventBus.Publish(ctx, &OrderPlacedEvent{OrderUUID: order.OrderUUID, ProductsUUIDs: productsUUIDs})
+	//productsUUIDs := productsUUIDsFromLineItems(cmd.LineItems) // TODO move this logic to domain layer
+	//
+	//err = h.eventBus.Publish(ctx, &orders.OrderPlacedEvent{OrderUUID: order.OrderUUID, ProductsUUIDs: productsUUIDs})
 	//if err != nil {
 	//	return err
 	//}
 
 	return nil
-}
-
-func productsUUIDsFromLineItems(lineItems []orders.LineItem) []string {
-	productUUIDs := make([]string, len(lineItems))
-	for i, lineItem := range lineItems {
-		productUUIDs[i] = lineItem.ProductUUID
-	}
-	return productUUIDs
 }

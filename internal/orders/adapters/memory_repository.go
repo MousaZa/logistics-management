@@ -10,6 +10,7 @@ import (
 
 type OrderMemoryRepository struct {
 	orders []*orders.Order
+	events []*orders.OrderEvent
 	mutex  sync.RWMutex
 }
 
@@ -21,7 +22,31 @@ func (mr *OrderMemoryRepository) AddOrder(_ context.Context, o *orders.Order) er
 	mr.mutex.Lock()
 	defer mr.mutex.Unlock()
 	mr.orders = append(mr.orders, o)
+
+	pids := productsUUIDsFromLineItems(o.LineItems)
+
+	opEvent := &orders.OrderPlacedEvent{
+		OrderUUID:     o.OrderUUID,
+		ProductsUUIDs: pids,
+	}
+
+	event := &orders.OrderEvent{
+		Published: false,
+		Topic:     "order.placed",
+		Payload:   opEvent,
+	}
+
+	mr.events = append(mr.events, event)
+
 	return nil
+}
+
+func productsUUIDsFromLineItems(lineItems []orders.LineItem) []string {
+	productUUIDs := make([]string, len(lineItems))
+	for i, lineItem := range lineItems {
+		productUUIDs[i] = lineItem.ProductUUID
+	}
+	return productUUIDs
 }
 
 func (mr *OrderMemoryRepository) GetOrder(_ context.Context, orderUUID string) (*orders.Order, error) {

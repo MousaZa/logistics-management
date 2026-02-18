@@ -1,0 +1,3 @@
+./command.go
+./logging.go
+./query.go

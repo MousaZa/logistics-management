@@ -10,9 +10,16 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func NewApplication(_ context.Context) app.Application {
+func NewApplication(ctx context.Context) app.Application {
 
-	ordersRepository := adapters.NewOrderMemoryRepository()
+	//ordersRepository := adapters.NewOrderMemoryRepository()
+
+	conn, err := adapters.NewPostgresConnection(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	ordersRepository := adapters.NewPostgresOrderRepository(conn)
 
 	logger := logrus.NewEntry(logrus.StandardLogger())
 

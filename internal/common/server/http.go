@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/MousaZa/logistics-management/internal/common/logs"
 	"github.com/go-chi/chi/v5"
@@ -11,7 +12,7 @@ import (
 )
 
 func RunHTTPServer(createHandler func(router chi.Router) http.Handler) {
-	RunHTTPServerOnAddr(":3333", createHandler) // TODO: make it take PORT from env
+	RunHTTPServerOnAddr(":"+os.Getenv("PORT"), createHandler) // TODO: make it take PORT from env
 }
 
 func RunHTTPServerOnAddr(addr string, createHandler func(router chi.Router) http.Handler) {

@@ -1,0 +1,4 @@
+./doc.go
+./log.go
+./slog.go
+./uuid.go

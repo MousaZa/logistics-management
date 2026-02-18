@@ -1,0 +1,15 @@
+./command_bus.go
+./command_handler.go
+./command_processor.go
+./cqrs.go
+./ctx.go
+./doc.go
+./event_bus.go
+./event_handler.go
+./event_processor.go
+./event_processor_group.go
+./marshaler.go
+./marshaler_json.go
+./marshaler_protobuf.go
+./name.go
+./object.go

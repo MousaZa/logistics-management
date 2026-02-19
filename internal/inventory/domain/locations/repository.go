@@ -14,10 +14,10 @@ func (e NotFoundError) Error() string {
 }
 
 type LocationRepository interface {
-	Save(ctx context.Context, location *Location) error
-	FindAll(ctx context.Context) ([]*Location, error)
-	FindByUUID(ctx context.Context, locationUUID string) (*Location, error)
-	Update(
+	AddLocation(ctx context.Context, location *Location) error
+	GetAllLocations(ctx context.Context) ([]*Location, error)
+	GetLocation(ctx context.Context, locationUUID string) (*Location, error)
+	UpdateLocation(
 		ctx context.Context,
 		locationUUID string,
 		updateFunc func(

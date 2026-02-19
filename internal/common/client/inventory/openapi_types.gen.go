@@ -34,10 +34,10 @@ type Locations struct {
 type Product struct {
 	AvailableQuantity int        `json:"availableQuantity"`
 	CreatedAt         *time.Time `json:"createdAt,omitempty"`
-	ItemUUID          *string    `json:"itemUUID,omitempty"`
 	LocationUUID      string     `json:"locationUUID"`
 	Name              string     `json:"name"`
 	Price             float32    `json:"price"`
+	ProductUUID       *string    `json:"productUUID,omitempty"`
 	UpdatedAt         *time.Time `json:"updatedAt,omitempty"`
 	Weight            float32    `json:"weight"`
 }

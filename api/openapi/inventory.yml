@@ -124,7 +124,7 @@ components:
       type: object
       required: [name, price, weight, availableQuantity, locationUUID]
       properties:
-        itemUUID:
+        productUUID:
           type: string
         name:
           type: string

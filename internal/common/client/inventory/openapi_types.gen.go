@@ -4,6 +4,8 @@
 package inventory
 
 import (
+	"time"
+
 	openapi_types "github.com/oapi-codegen/runtime/types"
 )
 
@@ -15,10 +17,12 @@ type Error struct {
 
 // Location defines model for Location.
 type Location struct {
-	Address      string  `json:"address"`
-	City         string  `json:"city"`
-	LocationUUID *string `json:"locationUUID,omitempty"`
-	Name         string  `json:"name"`
+	Address      string     `json:"address"`
+	City         string     `json:"city"`
+	CreatedAt    *time.Time `json:"createdAt,omitempty"`
+	LocationUUID *string    `json:"locationUUID,omitempty"`
+	Name         string     `json:"name"`
+	UpdatedAt    *time.Time `json:"updatedAt,omitempty"`
 }
 
 // Locations defines model for Locations.
@@ -28,12 +32,14 @@ type Locations struct {
 
 // Product defines model for Product.
 type Product struct {
-	AvailableQuantity int     `json:"availableQuantity"`
-	ItemUUID          *string `json:"itemUUID,omitempty"`
-	LocationUUID      string  `json:"locationUUID"`
-	Name              string  `json:"name"`
-	Price             float32 `json:"price"`
-	Weight            float32 `json:"weight"`
+	AvailableQuantity int        `json:"availableQuantity"`
+	CreatedAt         *time.Time `json:"createdAt,omitempty"`
+	ItemUUID          *string    `json:"itemUUID,omitempty"`
+	LocationUUID      string     `json:"locationUUID"`
+	Name              string     `json:"name"`
+	Price             float32    `json:"price"`
+	UpdatedAt         *time.Time `json:"updatedAt,omitempty"`
+	Weight            float32    `json:"weight"`
 }
 
 // Products defines model for Products.

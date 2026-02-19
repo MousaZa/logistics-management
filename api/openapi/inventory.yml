@@ -136,6 +136,12 @@ components:
           type: number
         locationUUID:
           type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
     Location:
       type: object
@@ -149,6 +155,12 @@ components:
           type: string
         address:
           type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
 
     Products:
       type: object

@@ -13,7 +13,7 @@ func (e NotFoundError) Error() string {
 	return fmt.Sprintf("location '%s' not found", e.LocationUUID)
 }
 
-type LocationRepository interface {
+type Repository interface {
 	AddProduct(ctx context.Context, location *Product) error
 	GetAllProducts(ctx context.Context) ([]*Product, error)
 	GetLocationProducts(ctx context.Context, locationUUID string) ([]*Product, error)
@@ -22,7 +22,7 @@ type LocationRepository interface {
 		ctx context.Context,
 		productUUID string,
 		updateFunc func(
-		ctx context.Context,
-		o *Product,
-	) (*Product, error)) error
+			ctx context.Context,
+			o *Product,
+		) (*Product, error)) error
 }

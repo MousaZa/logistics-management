@@ -13,7 +13,7 @@ func (e NotFoundError) Error() string {
 	return fmt.Sprintf("location '%s' not found", e.LocationUUID)
 }
 
-type LocationRepository interface {
+type Repository interface {
 	AddLocation(ctx context.Context, location *Location) error
 	GetAllLocations(ctx context.Context) ([]*Location, error)
 	GetLocation(ctx context.Context, locationUUID string) (*Location, error)

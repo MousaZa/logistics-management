@@ -21,7 +21,10 @@ type Commands struct {
 type Queries struct {
 	// Locations
 	LocationByUUID query.LocationByUUIDHandler
+	AllLocations   query.AllLocationsHandler
 
 	// Products
-	ProductByUUID query.ProductByUUIDHandler
+	ProductByUUID    query.ProductByUUIDHandler
+	AllProducts      query.AllProductsHandler
+	LocationProducts query.LocationProductsHandler
 }

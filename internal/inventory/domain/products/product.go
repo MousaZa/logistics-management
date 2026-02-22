@@ -8,17 +8,15 @@ import (
 )
 
 type Product struct {
-	AvailableQuantity int
-	CreatedAt         time.Time
-	ProductUUID       string
-	LocationUUID      string
-	Name              string
-	Price             float32
-	UpdatedAt         time.Time
-	Weight            float32
+	CreatedAt   time.Time
+	ProductUUID string
+	Name        string
+	Price       float32
+	UpdatedAt   time.Time
+	Weight      float32
 }
 
-func NewProduct(name string, price float32, weight float32, locationUUID string, availableQuantity int) (*Product, error) {
+func NewProduct(name string, price float32, weight float32) (*Product, error) {
 	if name == "" {
 		return nil, errors.New("empty name")
 	}
@@ -28,9 +26,6 @@ func NewProduct(name string, price float32, weight float32, locationUUID string,
 	if weight == 0 {
 		return nil, errors.New("empty weight")
 	}
-	if locationUUID == "" {
-		return nil, errors.New("empty locationUUID")
-	}
 
 	productUUID, err := uuid.NewRandom()
 	if err != nil {
@@ -38,13 +33,11 @@ func NewProduct(name string, price float32, weight float32, locationUUID string,
 	}
 
 	return &Product{
-		ProductUUID:       productUUID.String(),
-		Name:              name,
-		Price:             price,
-		Weight:            weight,
-		LocationUUID:      locationUUID,
-		CreatedAt:         time.Now(),
-		UpdatedAt:         time.Now(),
-		AvailableQuantity: availableQuantity,
+		ProductUUID: productUUID.String(),
+		Name:        name,
+		Price:       price,
+		Weight:      weight,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}, nil
 }

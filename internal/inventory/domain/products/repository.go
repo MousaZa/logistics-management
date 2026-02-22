@@ -16,7 +16,6 @@ func (e NotFoundError) Error() string {
 type Repository interface {
 	AddProduct(ctx context.Context, location *Product) error
 	GetAllProducts(ctx context.Context) ([]*Product, error)
-	GetLocationProducts(ctx context.Context, locationUUID string) ([]*Product, error)
 	GetProduct(ctx context.Context, locationUUID string) (*Product, error)
 	UpdateProduct(
 		ctx context.Context,

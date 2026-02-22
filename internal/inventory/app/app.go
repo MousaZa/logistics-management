@@ -24,7 +24,10 @@ type Queries struct {
 	AllLocations   query.AllLocationsHandler
 
 	// Products
-	ProductByUUID    query.ProductByUUIDHandler
-	AllProducts      query.AllProductsHandler
+	ProductByUUID query.ProductByUUIDHandler
+	AllProducts   query.AllProductsHandler
+
+	// Inventory
 	LocationProducts query.LocationProductsHandler
+	ProductLocations query.ProductLocationsHandler
 }

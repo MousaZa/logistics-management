@@ -14,14 +14,14 @@ func (e NotFoundError) Error() string {
 }
 
 type Repository interface {
-	AddProduct(ctx context.Context, location *Product) error
+	AddProduct(ctx context.Context, product *Product) error
 	GetAllProducts(ctx context.Context) ([]*Product, error)
-	GetProduct(ctx context.Context, locationUUID string) (*Product, error)
+	GetProduct(ctx context.Context, productUUID string) (*Product, error)
 	UpdateProduct(
 		ctx context.Context,
 		productUUID string,
 		updateFunc func(
 			ctx context.Context,
-			o *Product,
+			p *Product,
 		) (*Product, error)) error
 }

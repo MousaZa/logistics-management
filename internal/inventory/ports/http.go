@@ -67,3 +67,9 @@ func (h HttpServer) GetLocationContents(w http.ResponseWriter, r *http.Request, 
 	//TODO implement me
 	panic("implement me")
 }
+
+func NewHttpServer(application app.Application) HttpServer {
+	return HttpServer{
+		app: application,
+	}
+}

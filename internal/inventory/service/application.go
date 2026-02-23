@@ -1,27 +1,42 @@
 package service
 
 import (
+	"context"
+
+	"github.com/MousaZa/logistics-management/internal/inventory/adapters/postgres"
 	"github.com/MousaZa/logistics-management/internal/inventory/app"
 	"github.com/MousaZa/logistics-management/internal/inventory/app/command"
 	"github.com/MousaZa/logistics-management/internal/inventory/app/query"
 	"github.com/sirupsen/logrus"
 )
 
-func NewApplication() *app.Application {
+func NewApplication(ctx context.Context) app.Application {
+
+	conn, err := postgres.NewPostgresConnection(ctx)
+	if err != nil {
+		panic(err)
+	}
+
+	productsRepository := postgres.NewPostgresProductsRepository(conn)
+	locationsRepository := postgres.NewPostgresLocationsRepository(conn)
+	inventoryRepository := postgres.NewPostgresInventoryRepository(conn)
 
 	logger := logrus.NewEntry(logrus.StandardLogger())
 
-	return &app.Application{
+	return app.Application{
 		Commands: app.Commands{
-			AddLocation: command.NewAddLocationHandler(nil, logger),
-			AddProduct:  command.NewAddProductHandler(nil, logger),
+			AddLocation: command.NewAddLocationHandler(locationsRepository, logger),
+
+			AddProduct: command.NewAddProductHandler(productsRepository, logger),
 		},
 		Queries: app.Queries{
-			LocationByUUID:   query.NewLocationByUUIDHandler(nil, logger),
-			AllLocations:     query.NewAllLocationsHandler(nil, logger),
-			ProductByUUID:    query.NewProductByUUIDHandler(nil, logger),
-			AllProducts:      query.NewAllProductsHandler(nil, logger),
-			LocationProducts: query.NewLocationProductsHandler(nil, logger),
+			LocationByUUID: query.NewLocationByUUIDHandler(locationsRepository, logger),
+			AllLocations:   query.NewAllLocationsHandler(locationsRepository, logger),
+
+			ProductByUUID: query.NewProductByUUIDHandler(productsRepository, logger),
+			AllProducts:   query.NewAllProductsHandler(productsRepository, logger),
+
+			LocationProducts: query.NewLocationProductsHandler(inventoryRepository, logger),
 		},
 	}
 }

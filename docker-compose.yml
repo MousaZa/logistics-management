@@ -20,6 +20,27 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
+  inventory-http:
+    build:
+      context: docker/app
+      args:
+        - GITHUB_TOKEN=${GITHUB_TOKEN}
+    volumes:
+      - ./internal:/internal
+      - ./.go/pkg:/go/pkg
+      - ./.go-cache:/go-cache
+    working_dir: /internal
+    ports:
+      - "127.0.0.1:3032:$PORT"
+    env_file:
+      - .env
+    environment:
+      SERVICE: inventory
+      SERVER_TO_RUN: http
+      GOCACHE: /go-cache
+    depends_on:
+      postgres_db:
+        condition: service_healthy
   postgres_db:
     image: postgres:15-alpine
     container_name: postgres_db

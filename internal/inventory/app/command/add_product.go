@@ -9,11 +9,9 @@ import (
 )
 
 type AddProduct struct {
-	Name              string
-	Price             float32
-	Weight            float32
-	LocationUUID      string
-	AvailableQuantity int
+	Name   string
+	Price  float32
+	Weight float32
 }
 
 type AddProductHandler decorator.CommandHandler[AddProduct]
@@ -27,7 +25,7 @@ func NewAddProductHandler(repo products.Repository, logger *logrus.Entry) AddPro
 }
 
 func (h addProductHandler) Handle(ctx context.Context, cmd AddProduct) error {
-	product, err := products.NewProduct(cmd.Name, cmd.Price, cmd.Weight, cmd.LocationUUID, cmd.AvailableQuantity)
+	product, err := products.NewProduct(cmd.Name, cmd.Price, cmd.Weight)
 	if err != nil {
 		return err
 	}

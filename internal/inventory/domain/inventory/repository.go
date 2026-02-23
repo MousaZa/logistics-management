@@ -10,4 +10,6 @@ import (
 type Repository interface {
 	GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.Product, error)
 	GetProductLocations(ctx context.Context, productUUID string) ([]*locations.Location, error)
+
+	AddInventory(ctx context.Context, inventory *Inventory) error
 }

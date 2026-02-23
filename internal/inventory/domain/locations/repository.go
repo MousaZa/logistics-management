@@ -22,6 +22,6 @@ type Repository interface {
 		locationUUID string,
 		updateFunc func(
 			ctx context.Context,
-			o *Location,
+			p *Location,
 		) (*Location, error)) error
 }

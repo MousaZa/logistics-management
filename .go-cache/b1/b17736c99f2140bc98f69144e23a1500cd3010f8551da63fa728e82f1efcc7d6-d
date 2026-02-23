@@ -1,5 +1,0 @@
-./connection.go
-./inventory_repository.go
-./locations_repository.go
-./products_repository.go
-./run_migrations.go

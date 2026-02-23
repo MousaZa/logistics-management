@@ -1,6 +1,0 @@
-./all_locations.go
-./all_products.go
-./location_by_uuid.go
-./location_products.go
-./product_by_uuid.go
-./product_locations.go

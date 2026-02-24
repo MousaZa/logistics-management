@@ -1,2 +1,4 @@
 .idea/
 .env
+.go/
+.go-cache/

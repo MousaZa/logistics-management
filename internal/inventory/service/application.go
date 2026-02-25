@@ -28,6 +28,8 @@ func NewApplication(ctx context.Context) app.Application {
 			AddLocation: command.NewAddLocationHandler(locationsRepository, logger),
 
 			AddProduct: command.NewAddProductHandler(productsRepository, logger),
+
+			AddInventory: command.NewAddInventoryHandler(inventoryRepository, logger),
 		},
 		Queries: app.Queries{
 			LocationByUUID: query.NewLocationByUUIDHandler(locationsRepository, logger),

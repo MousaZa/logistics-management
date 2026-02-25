@@ -36,7 +36,6 @@ CREATE TABLE inventory (
 
 ---- create above / drop below ----
 
-DROP TABLE events;
 DROP TABLE inventory;
 DROP TABLE locations;
 DROP TABLE products;

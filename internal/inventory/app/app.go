@@ -16,6 +16,9 @@ type Commands struct {
 
 	// Products
 	AddProduct command.AddProductHandler
+
+	// Inventory
+	AddInventory command.AddInventoryHandler
 }
 
 type Queries struct {

@@ -14,18 +14,76 @@ type PostgresInventoryRepository struct {
 }
 
 func (p PostgresInventoryRepository) GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.Product, error) {
-	//TODO implement me
-	panic("implement me")
+	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at
+			  FROM inventory i
+			  JOIN products p ON i.product_uuid = p.product_uuid
+			  WHERE i.location_uuid = $1`
+
+	rows, err := p.db.Query(ctx, query, locationUUID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var productsList []*products.Product
+	for rows.Next() {
+		var p products.Product
+		err := rows.Scan(&p.ProductUUID, &p.Name, &p.Price, &p.Weight, &p.CreatedAt, &p.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		productsList = append(productsList, &p)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return productsList, nil
 }
 
 func (p PostgresInventoryRepository) GetProductLocations(ctx context.Context, productUUID string) ([]*locations.Location, error) {
-	//TODO implement me
-	panic("implement me")
+	query := `SELECT l.location_uuid, l.name, l.address, l.city, l.created_at, l.updated_at
+			  FROM inventory i
+			  JOIN locations l ON i.location_uuid = l.location_uuid
+			  WHERE i.product_uuid = $1`
+
+	rows, err := p.db.Query(ctx, query, productUUID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var locationsList []*locations.Location
+	for rows.Next() {
+		var l locations.Location
+		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
+		if err != nil {
+			return nil, err
+		}
+		locationsList = append(locationsList, &l)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return locationsList, nil
 }
 
 func (p PostgresInventoryRepository) AddInventory(ctx context.Context, inventory *inventory.Inventory) error {
-	//TODO implement me
-	panic("implement me")
+	query := `INSERT INTO inventory (location_uuid, product_uuid, quantity) VALUES ($1, $2, $3)`
+
+	_, err := p.db.Exec(ctx, query,
+		inventory.LocationUUID,
+		inventory.ProductUUID,
+		inventory.Quantity,
+	)
+
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func NewPostgresInventoryRepository(db *pgxpool.Pool) *PostgresInventoryRepository {

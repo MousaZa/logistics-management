@@ -39,6 +39,8 @@ func RunMigrations(ctx context.Context, pool *pgxpool.Pool) error {
 		return fmt.Errorf("unable to load migrations: %w", err)
 	}
 
+	fmt.Printf("DEBUG: Loaded %d migrations.\n", len(migrator.Migrations))
+
 	if err := migrator.Migrate(ctx); err != nil {
 		return fmt.Errorf("unable to migrate: %w", err)
 	}

@@ -98,13 +98,45 @@ type ClientInterface interface {
 
 	CreateLocation(ctx context.Context, body CreateLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// GetLocationByUUID request
+	GetLocationByUUID(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateLocationWithBody request with any body
+	UpdateLocationWithBody(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateLocation(ctx context.Context, locationUUID openapi_types.UUID, body UpdateLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetLocationContents request
+	GetLocationContents(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// AddProductsToLocationWithBody request with any body
+	AddProductsToLocationWithBody(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	AddProductsToLocation(ctx context.Context, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetProductLocations request
+	GetProductLocations(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// GetProducts request
+	GetProducts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// CreateProductWithBody request with any body
+	CreateProductWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	CreateProduct(ctx context.Context, body CreateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// TransferProductsWithBody request with any body
 	TransferProductsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	TransferProducts(ctx context.Context, body TransferProductsJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	// GetLocationContents request
-	GetLocationContents(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+	// GetProductByUUID request
+	GetProductByUUID(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	// UpdateProductWithBody request with any body
+	UpdateProductWithBody(ctx context.Context, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	UpdateProduct(ctx context.Context, productUUID openapi_types.UUID, body UpdateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetLocations(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -143,6 +175,126 @@ func (c *Client) CreateLocation(ctx context.Context, body CreateLocationJSONRequ
 	return c.Client.Do(req)
 }
 
+func (c *Client) GetLocationByUUID(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLocationByUUIDRequest(c.Server, locationUUID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateLocationWithBody(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateLocationRequestWithBody(c.Server, locationUUID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateLocation(ctx context.Context, locationUUID openapi_types.UUID, body UpdateLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateLocationRequest(c.Server, locationUUID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetLocationContents(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetLocationContentsRequest(c.Server, locationUUID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddProductsToLocationWithBody(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddProductsToLocationRequestWithBody(c.Server, locationUUID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) AddProductsToLocation(ctx context.Context, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewAddProductsToLocationRequest(c.Server, locationUUID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetProductLocations(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetProductLocationsRequest(c.Server, productUUID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) GetProducts(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetProductsRequest(c.Server)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateProductWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateProductRequestWithBody(c.Server, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) CreateProduct(ctx context.Context, body CreateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewCreateProductRequest(c.Server, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
 func (c *Client) TransferProductsWithBody(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewTransferProductsRequestWithBody(c.Server, contentType, body)
 	if err != nil {
@@ -167,8 +319,32 @@ func (c *Client) TransferProducts(ctx context.Context, body TransferProductsJSON
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetLocationContents(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetLocationContentsRequest(c.Server, locationUUID)
+func (c *Client) GetProductByUUID(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetProductByUUIDRequest(c.Server, productUUID)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateProductWithBody(ctx context.Context, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateProductRequestWithBody(c.Server, productUUID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) UpdateProduct(ctx context.Context, productUUID openapi_types.UUID, body UpdateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewUpdateProductRequest(c.Server, productUUID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -246,27 +422,68 @@ func NewCreateLocationRequestWithBody(server string, contentType string, body io
 	return req, nil
 }
 
-// NewTransferProductsRequest calls the generic TransferProducts builder with application/json body
-func NewTransferProductsRequest(server string, body TransferProductsJSONRequestBody) (*http.Request, error) {
-	var bodyReader io.Reader
-	buf, err := json.Marshal(body)
+// NewGetLocationByUUIDRequest generates requests for GetLocationByUUID
+func NewGetLocationByUUIDRequest(server string, locationUUID openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "locationUUID", runtime.ParamLocationPath, locationUUID)
 	if err != nil {
 		return nil, err
 	}
-	bodyReader = bytes.NewReader(buf)
-	return NewTransferProductsRequestWithBody(server, "application/json", bodyReader)
-}
-
-// NewTransferProductsRequestWithBody generates requests for TransferProducts with any type of body
-func NewTransferProductsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
-	var err error
 
 	serverURL, err := url.Parse(server)
 	if err != nil {
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/locations/transfer")
+	operationPath := fmt.Sprintf("/locations/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateLocationRequest calls the generic UpdateLocation builder with application/json body
+func NewUpdateLocationRequest(server string, locationUUID openapi_types.UUID, body UpdateLocationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateLocationRequestWithBody(server, locationUUID, "application/json", bodyReader)
+}
+
+// NewUpdateLocationRequestWithBody generates requests for UpdateLocation with any type of body
+func NewUpdateLocationRequestWithBody(server string, locationUUID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "locationUUID", runtime.ParamLocationPath, locationUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/locations/%s", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -302,7 +519,7 @@ func NewGetLocationContentsRequest(server string, locationUUID openapi_types.UUI
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/locations/%s/contents", pathParam0)
+	operationPath := fmt.Sprintf("/locations/%s/products", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}
@@ -316,6 +533,275 @@ func NewGetLocationContentsRequest(server string, locationUUID openapi_types.UUI
 	if err != nil {
 		return nil, err
 	}
+
+	return req, nil
+}
+
+// NewAddProductsToLocationRequest calls the generic AddProductsToLocation builder with application/json body
+func NewAddProductsToLocationRequest(server string, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewAddProductsToLocationRequestWithBody(server, locationUUID, "application/json", bodyReader)
+}
+
+// NewAddProductsToLocationRequestWithBody generates requests for AddProductsToLocation with any type of body
+func NewAddProductsToLocationRequestWithBody(server string, locationUUID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "locationUUID", runtime.ParamLocationPath, locationUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/locations/%s/products", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetProductLocationsRequest generates requests for GetProductLocations
+func NewGetProductLocationsRequest(server string, productUUID openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "productUUID", runtime.ParamLocationPath, productUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/product/%s/locations", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewGetProductsRequest generates requests for GetProducts
+func NewGetProductsRequest(server string) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewCreateProductRequest calls the generic CreateProduct builder with application/json body
+func NewCreateProductRequest(server string, body CreateProductJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewCreateProductRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewCreateProductRequestWithBody generates requests for CreateProduct with any type of body
+func NewCreateProductRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewTransferProductsRequest calls the generic TransferProducts builder with application/json body
+func NewTransferProductsRequest(server string, body TransferProductsJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewTransferProductsRequestWithBody(server, "application/json", bodyReader)
+}
+
+// NewTransferProductsRequestWithBody generates requests for TransferProducts with any type of body
+func NewTransferProductsRequestWithBody(server string, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/transfer")
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
+// NewGetProductByUUIDRequest generates requests for GetProductByUUID
+func NewGetProductByUUIDRequest(server string, productUUID openapi_types.UUID) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "productUUID", runtime.ParamLocationPath, productUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("GET", queryURL.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return req, nil
+}
+
+// NewUpdateProductRequest calls the generic UpdateProduct builder with application/json body
+func NewUpdateProductRequest(server string, productUUID openapi_types.UUID, body UpdateProductJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewUpdateProductRequestWithBody(server, productUUID, "application/json", bodyReader)
+}
+
+// NewUpdateProductRequestWithBody generates requests for UpdateProduct with any type of body
+func NewUpdateProductRequestWithBody(server string, productUUID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "productUUID", runtime.ParamLocationPath, productUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/products/%s", pathParam0)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
 
 	return req, nil
 }
@@ -371,13 +857,45 @@ type ClientWithResponsesInterface interface {
 
 	CreateLocationWithResponse(ctx context.Context, body CreateLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateLocationResponse, error)
 
+	// GetLocationByUUIDWithResponse request
+	GetLocationByUUIDWithResponse(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetLocationByUUIDResponse, error)
+
+	// UpdateLocationWithBodyWithResponse request with any body
+	UpdateLocationWithBodyWithResponse(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateLocationResponse, error)
+
+	UpdateLocationWithResponse(ctx context.Context, locationUUID openapi_types.UUID, body UpdateLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateLocationResponse, error)
+
+	// GetLocationContentsWithResponse request
+	GetLocationContentsWithResponse(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetLocationContentsResponse, error)
+
+	// AddProductsToLocationWithBodyWithResponse request with any body
+	AddProductsToLocationWithBodyWithResponse(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddProductsToLocationResponse, error)
+
+	AddProductsToLocationWithResponse(ctx context.Context, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*AddProductsToLocationResponse, error)
+
+	// GetProductLocationsWithResponse request
+	GetProductLocationsWithResponse(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProductLocationsResponse, error)
+
+	// GetProductsWithResponse request
+	GetProductsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetProductsResponse, error)
+
+	// CreateProductWithBodyWithResponse request with any body
+	CreateProductWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateProductResponse, error)
+
+	CreateProductWithResponse(ctx context.Context, body CreateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateProductResponse, error)
+
 	// TransferProductsWithBodyWithResponse request with any body
 	TransferProductsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TransferProductsResponse, error)
 
 	TransferProductsWithResponse(ctx context.Context, body TransferProductsJSONRequestBody, reqEditors ...RequestEditorFn) (*TransferProductsResponse, error)
 
-	// GetLocationContentsWithResponse request
-	GetLocationContentsWithResponse(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetLocationContentsResponse, error)
+	// GetProductByUUIDWithResponse request
+	GetProductByUUIDWithResponse(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProductByUUIDResponse, error)
+
+	// UpdateProductWithBodyWithResponse request with any body
+	UpdateProductWithBodyWithResponse(ctx context.Context, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error)
+
+	UpdateProductWithResponse(ctx context.Context, productUUID openapi_types.UUID, body UpdateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error)
 }
 
 type GetLocationsResponse struct {
@@ -425,14 +943,15 @@ func (r CreateLocationResponse) StatusCode() int {
 	return 0
 }
 
-type TransferProductsResponse struct {
+type GetLocationByUUIDResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
+	JSON200      *Location
 	JSONDefault  *Error
 }
 
 // Status returns HTTPResponse.Status
-func (r TransferProductsResponse) Status() string {
+func (r GetLocationByUUIDResponse) Status() string {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.Status
 	}
@@ -440,7 +959,29 @@ func (r TransferProductsResponse) Status() string {
 }
 
 // StatusCode returns HTTPResponse.StatusCode
-func (r TransferProductsResponse) StatusCode() int {
+func (r GetLocationByUUIDResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateLocationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateLocationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateLocationResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -464,6 +1005,163 @@ func (r GetLocationContentsResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r GetLocationContentsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type AddProductsToLocationResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r AddProductsToLocationResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r AddProductsToLocationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetProductLocationsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]Locations
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r GetProductLocationsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetProductLocationsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetProductsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *[]Products
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r GetProductsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetProductsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type CreateProductResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r CreateProductResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r CreateProductResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type TransferProductsResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r TransferProductsResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r TransferProductsResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type GetProductByUUIDResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSON200      *Product
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r GetProductByUUIDResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r GetProductByUUIDResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type UpdateProductResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r UpdateProductResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r UpdateProductResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -496,6 +1194,93 @@ func (c *ClientWithResponses) CreateLocationWithResponse(ctx context.Context, bo
 	return ParseCreateLocationResponse(rsp)
 }
 
+// GetLocationByUUIDWithResponse request returning *GetLocationByUUIDResponse
+func (c *ClientWithResponses) GetLocationByUUIDWithResponse(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetLocationByUUIDResponse, error) {
+	rsp, err := c.GetLocationByUUID(ctx, locationUUID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLocationByUUIDResponse(rsp)
+}
+
+// UpdateLocationWithBodyWithResponse request with arbitrary body returning *UpdateLocationResponse
+func (c *ClientWithResponses) UpdateLocationWithBodyWithResponse(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateLocationResponse, error) {
+	rsp, err := c.UpdateLocationWithBody(ctx, locationUUID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateLocationResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateLocationWithResponse(ctx context.Context, locationUUID openapi_types.UUID, body UpdateLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateLocationResponse, error) {
+	rsp, err := c.UpdateLocation(ctx, locationUUID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateLocationResponse(rsp)
+}
+
+// GetLocationContentsWithResponse request returning *GetLocationContentsResponse
+func (c *ClientWithResponses) GetLocationContentsWithResponse(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetLocationContentsResponse, error) {
+	rsp, err := c.GetLocationContents(ctx, locationUUID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetLocationContentsResponse(rsp)
+}
+
+// AddProductsToLocationWithBodyWithResponse request with arbitrary body returning *AddProductsToLocationResponse
+func (c *ClientWithResponses) AddProductsToLocationWithBodyWithResponse(ctx context.Context, locationUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*AddProductsToLocationResponse, error) {
+	rsp, err := c.AddProductsToLocationWithBody(ctx, locationUUID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddProductsToLocationResponse(rsp)
+}
+
+func (c *ClientWithResponses) AddProductsToLocationWithResponse(ctx context.Context, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*AddProductsToLocationResponse, error) {
+	rsp, err := c.AddProductsToLocation(ctx, locationUUID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseAddProductsToLocationResponse(rsp)
+}
+
+// GetProductLocationsWithResponse request returning *GetProductLocationsResponse
+func (c *ClientWithResponses) GetProductLocationsWithResponse(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProductLocationsResponse, error) {
+	rsp, err := c.GetProductLocations(ctx, productUUID, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetProductLocationsResponse(rsp)
+}
+
+// GetProductsWithResponse request returning *GetProductsResponse
+func (c *ClientWithResponses) GetProductsWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetProductsResponse, error) {
+	rsp, err := c.GetProducts(ctx, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseGetProductsResponse(rsp)
+}
+
+// CreateProductWithBodyWithResponse request with arbitrary body returning *CreateProductResponse
+func (c *ClientWithResponses) CreateProductWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateProductResponse, error) {
+	rsp, err := c.CreateProductWithBody(ctx, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateProductResponse(rsp)
+}
+
+func (c *ClientWithResponses) CreateProductWithResponse(ctx context.Context, body CreateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateProductResponse, error) {
+	rsp, err := c.CreateProduct(ctx, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseCreateProductResponse(rsp)
+}
+
 // TransferProductsWithBodyWithResponse request with arbitrary body returning *TransferProductsResponse
 func (c *ClientWithResponses) TransferProductsWithBodyWithResponse(ctx context.Context, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*TransferProductsResponse, error) {
 	rsp, err := c.TransferProductsWithBody(ctx, contentType, body, reqEditors...)
@@ -513,13 +1298,30 @@ func (c *ClientWithResponses) TransferProductsWithResponse(ctx context.Context, 
 	return ParseTransferProductsResponse(rsp)
 }
 
-// GetLocationContentsWithResponse request returning *GetLocationContentsResponse
-func (c *ClientWithResponses) GetLocationContentsWithResponse(ctx context.Context, locationUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetLocationContentsResponse, error) {
-	rsp, err := c.GetLocationContents(ctx, locationUUID, reqEditors...)
+// GetProductByUUIDWithResponse request returning *GetProductByUUIDResponse
+func (c *ClientWithResponses) GetProductByUUIDWithResponse(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProductByUUIDResponse, error) {
+	rsp, err := c.GetProductByUUID(ctx, productUUID, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
-	return ParseGetLocationContentsResponse(rsp)
+	return ParseGetProductByUUIDResponse(rsp)
+}
+
+// UpdateProductWithBodyWithResponse request with arbitrary body returning *UpdateProductResponse
+func (c *ClientWithResponses) UpdateProductWithBodyWithResponse(ctx context.Context, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error) {
+	rsp, err := c.UpdateProductWithBody(ctx, productUUID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateProductResponse(rsp)
+}
+
+func (c *ClientWithResponses) UpdateProductWithResponse(ctx context.Context, productUUID openapi_types.UUID, body UpdateProductJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateProductResponse, error) {
+	rsp, err := c.UpdateProduct(ctx, productUUID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseUpdateProductResponse(rsp)
 }
 
 // ParseGetLocationsResponse parses an HTTP response from a GetLocationsWithResponse call
@@ -581,15 +1383,48 @@ func ParseCreateLocationResponse(rsp *http.Response) (*CreateLocationResponse, e
 	return response, nil
 }
 
-// ParseTransferProductsResponse parses an HTTP response from a TransferProductsWithResponse call
-func ParseTransferProductsResponse(rsp *http.Response) (*TransferProductsResponse, error) {
+// ParseGetLocationByUUIDResponse parses an HTTP response from a GetLocationByUUIDWithResponse call
+func ParseGetLocationByUUIDResponse(rsp *http.Response) (*GetLocationByUUIDResponse, error) {
 	bodyBytes, err := io.ReadAll(rsp.Body)
 	defer func() { _ = rsp.Body.Close() }()
 	if err != nil {
 		return nil, err
 	}
 
-	response := &TransferProductsResponse{
+	response := &GetLocationByUUIDResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Location
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateLocationResponse parses an HTTP response from a UpdateLocationWithResponse call
+func ParseUpdateLocationResponse(rsp *http.Response) (*UpdateLocationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateLocationResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}
@@ -628,6 +1463,209 @@ func ParseGetLocationContentsResponse(rsp *http.Response) (*GetLocationContentsR
 		}
 		response.JSON200 = &dest
 
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseAddProductsToLocationResponse parses an HTTP response from a AddProductsToLocationWithResponse call
+func ParseAddProductsToLocationResponse(rsp *http.Response) (*AddProductsToLocationResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &AddProductsToLocationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetProductLocationsResponse parses an HTTP response from a GetProductLocationsWithResponse call
+func ParseGetProductLocationsResponse(rsp *http.Response) (*GetProductLocationsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetProductLocationsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []Locations
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetProductsResponse parses an HTTP response from a GetProductsWithResponse call
+func ParseGetProductsResponse(rsp *http.Response) (*GetProductsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetProductsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest []Products
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseCreateProductResponse parses an HTTP response from a CreateProductWithResponse call
+func ParseCreateProductResponse(rsp *http.Response) (*CreateProductResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &CreateProductResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseTransferProductsResponse parses an HTTP response from a TransferProductsWithResponse call
+func ParseTransferProductsResponse(rsp *http.Response) (*TransferProductsResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &TransferProductsResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseGetProductByUUIDResponse parses an HTTP response from a GetProductByUUIDWithResponse call
+func ParseGetProductByUUIDResponse(rsp *http.Response) (*GetProductByUUIDResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &GetProductByUUIDResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
+		var dest Product
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSON200 = &dest
+
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseUpdateProductResponse parses an HTTP response from a UpdateProductWithResponse call
+func ParseUpdateProductResponse(rsp *http.Response) (*UpdateProductResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &UpdateProductResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
 		var dest Error
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {

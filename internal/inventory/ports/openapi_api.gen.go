@@ -21,11 +21,35 @@ type ServerInterface interface {
 	// (POST /locations)
 	CreateLocation(w http.ResponseWriter, r *http.Request)
 
-	// (PUT /locations/transfer)
+	// (GET /locations/{locationUUID})
+	GetLocationByUUID(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID)
+
+	// (PUT /locations/{locationUUID})
+	UpdateLocation(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID)
+
+	// (GET /locations/{locationUUID}/products)
+	GetLocationContents(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID)
+
+	// (PUT /locations/{locationUUID}/products)
+	AddProductsToLocation(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID)
+
+	// (GET /product/{productUUID}/locations)
+	GetProductLocations(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID)
+
+	// (GET /products)
+	GetProducts(w http.ResponseWriter, r *http.Request)
+
+	// (POST /products)
+	CreateProduct(w http.ResponseWriter, r *http.Request)
+
+	// (PUT /products/transfer)
 	TransferProducts(w http.ResponseWriter, r *http.Request)
 
-	// (GET /locations/{locationUUID}/contents)
-	GetLocationContents(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID)
+	// (GET /products/{productUUID})
+	GetProductByUUID(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID)
+
+	// (PUT /products/{productUUID})
+	UpdateProduct(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID)
 }
 
 // Unimplemented server implementation that returns http.StatusNotImplemented for each endpoint.
@@ -42,13 +66,53 @@ func (_ Unimplemented) CreateLocation(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (PUT /locations/transfer)
+// (GET /locations/{locationUUID})
+func (_ Unimplemented) GetLocationByUUID(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /locations/{locationUUID})
+func (_ Unimplemented) UpdateLocation(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /locations/{locationUUID}/products)
+func (_ Unimplemented) GetLocationContents(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /locations/{locationUUID}/products)
+func (_ Unimplemented) AddProductsToLocation(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /product/{productUUID}/locations)
+func (_ Unimplemented) GetProductLocations(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (GET /products)
+func (_ Unimplemented) GetProducts(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (POST /products)
+func (_ Unimplemented) CreateProduct(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /products/transfer)
 func (_ Unimplemented) TransferProducts(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /locations/{locationUUID}/contents)
-func (_ Unimplemented) GetLocationContents(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID) {
+// (GET /products/{productUUID})
+func (_ Unimplemented) GetProductByUUID(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /products/{productUUID})
+func (_ Unimplemented) UpdateProduct(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -89,11 +153,47 @@ func (siw *ServerInterfaceWrapper) CreateLocation(w http.ResponseWriter, r *http
 	handler.ServeHTTP(w, r)
 }
 
-// TransferProducts operation middleware
-func (siw *ServerInterfaceWrapper) TransferProducts(w http.ResponseWriter, r *http.Request) {
+// GetLocationByUUID operation middleware
+func (siw *ServerInterfaceWrapper) GetLocationByUUID(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "locationUUID" -------------
+	var locationUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "locationUUID", chi.URLParam(r, "locationUUID"), &locationUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "locationUUID", Err: err})
+		return
+	}
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		siw.Handler.TransferProducts(w, r)
+		siw.Handler.GetLocationByUUID(w, r, locationUUID)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateLocation operation middleware
+func (siw *ServerInterfaceWrapper) UpdateLocation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "locationUUID" -------------
+	var locationUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "locationUUID", chi.URLParam(r, "locationUUID"), &locationUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "locationUUID", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateLocation(w, r, locationUUID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -119,6 +219,148 @@ func (siw *ServerInterfaceWrapper) GetLocationContents(w http.ResponseWriter, r 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.GetLocationContents(w, r, locationUUID)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// AddProductsToLocation operation middleware
+func (siw *ServerInterfaceWrapper) AddProductsToLocation(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "locationUUID" -------------
+	var locationUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "locationUUID", chi.URLParam(r, "locationUUID"), &locationUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "locationUUID", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.AddProductsToLocation(w, r, locationUUID)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetProductLocations operation middleware
+func (siw *ServerInterfaceWrapper) GetProductLocations(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "productUUID" -------------
+	var productUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "productUUID", chi.URLParam(r, "productUUID"), &productUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "productUUID", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetProductLocations(w, r, productUUID)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetProducts operation middleware
+func (siw *ServerInterfaceWrapper) GetProducts(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetProducts(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// CreateProduct operation middleware
+func (siw *ServerInterfaceWrapper) CreateProduct(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.CreateProduct(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// TransferProducts operation middleware
+func (siw *ServerInterfaceWrapper) TransferProducts(w http.ResponseWriter, r *http.Request) {
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.TransferProducts(w, r)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// GetProductByUUID operation middleware
+func (siw *ServerInterfaceWrapper) GetProductByUUID(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "productUUID" -------------
+	var productUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "productUUID", chi.URLParam(r, "productUUID"), &productUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "productUUID", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.GetProductByUUID(w, r, productUUID)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// UpdateProduct operation middleware
+func (siw *ServerInterfaceWrapper) UpdateProduct(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "productUUID" -------------
+	var productUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "productUUID", chi.URLParam(r, "productUUID"), &productUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "productUUID", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.UpdateProduct(w, r, productUUID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -248,10 +490,34 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Post(options.BaseURL+"/locations", wrapper.CreateLocation)
 	})
 	r.Group(func(r chi.Router) {
-		r.Put(options.BaseURL+"/locations/transfer", wrapper.TransferProducts)
+		r.Get(options.BaseURL+"/locations/{locationUUID}", wrapper.GetLocationByUUID)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/locations/{locationUUID}/contents", wrapper.GetLocationContents)
+		r.Put(options.BaseURL+"/locations/{locationUUID}", wrapper.UpdateLocation)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/locations/{locationUUID}/products", wrapper.GetLocationContents)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/locations/{locationUUID}/products", wrapper.AddProductsToLocation)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/product/{productUUID}/locations", wrapper.GetProductLocations)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/products", wrapper.GetProducts)
+	})
+	r.Group(func(r chi.Router) {
+		r.Post(options.BaseURL+"/products", wrapper.CreateProduct)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/products/transfer", wrapper.TransferProducts)
+	})
+	r.Group(func(r chi.Router) {
+		r.Get(options.BaseURL+"/products/{productUUID}", wrapper.GetProductByUUID)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/products/{productUUID}", wrapper.UpdateProduct)
 	})
 
 	return r

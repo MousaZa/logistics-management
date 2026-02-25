@@ -15,23 +15,6 @@ servers:
 #  - bearerAuth: []
 paths:
   /locations:
-    get:
-      operationId: getLocations
-      responses:
-        '200':
-          description: todo
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Locations'
-        default:
-          description: unexpected error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
     post:
       operationId: createLocation
       requestBody:
@@ -50,7 +33,74 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /locations/{locationUUID}/contents:
+    get:
+      operationId: getLocations
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Locations'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /locations/{locationUUID}:
+    get:
+      operationId: getLocationByUUID
+      parameters:
+        - in: path
+          name: locationUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+        operationId: updateLocation
+        parameters:
+          - in: path
+            name: locationUUID
+            schema:
+                type: string
+                format: uuid
+            required: true
+            description: todo
+        requestBody:
+            description: todo
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Location'
+        responses:
+            '204':
+              description: todo
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error'
+  /locations/{locationUUID}/products:
     get:
       operationId: getLocationContents
       parameters:
@@ -74,7 +124,155 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /locations/transfer:
+    put:
+        operationId: addProductsToLocation
+        parameters:
+            - in: path
+              name: locationUUID
+              schema:
+                type: string
+                format: uuid
+              required: true
+              description: todo
+        requestBody:
+            description: todo
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    type: object
+                    required: [ productUUID, quantity ]
+                    properties:
+                      productUUID:
+                        type: string
+                        format: uuid
+                      quantity:
+                        type: integer
+
+        responses:
+            '204':
+              description: todo
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error'
+  /products:
+    post:
+      operationId: createProduct
+      requestBody:
+        description: todo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '204':
+          description: todo
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+        operationId: getProducts
+        responses:
+            '200':
+              description: todo
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Products'
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error'
+  /products/{productUUID}:
+    get:
+      operationId: getProductByUUID
+      parameters:
+        - in: path
+          name: productUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+        operationId: updateProduct
+        parameters:
+          - in: path
+            name: productUUID
+            schema:
+                type: string
+                format: uuid
+            required: true
+            description: todo
+        requestBody:
+            description: todo
+            required: true
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Product'
+        responses:
+            '204':
+              description: todo
+            default:
+              description: unexpected error
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/Error'
+  /product/{productUUID}/locations:
+    get:
+      operationId: getProductLocations
+      parameters:
+        - in: path
+          name: productUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Locations'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/transfer:
     put:
       operationId: transferProducts
       requestBody:
@@ -122,20 +320,18 @@ components:
   schemas:
     Product:
       type: object
-      required: [name, price, weight, availableQuantity, locationUUID]
+      required: [name, price, weight, quantity]
       properties:
         productUUID:
           type: string
         name:
           type: string
-        availableQuantity:
+        quantity:
           type: integer
         weight:
           type: number
         price:
           type: number
-        locationUUID:
-          type: string
         createdAt:
           type: string
           format: date-time

@@ -32,19 +32,24 @@ type Locations struct {
 
 // Product defines model for Product.
 type Product struct {
-	AvailableQuantity int        `json:"availableQuantity"`
-	CreatedAt         *time.Time `json:"createdAt,omitempty"`
-	LocationUUID      string     `json:"locationUUID"`
-	Name              string     `json:"name"`
-	Price             float32    `json:"price"`
-	ProductUUID       *string    `json:"productUUID,omitempty"`
-	UpdatedAt         *time.Time `json:"updatedAt,omitempty"`
-	Weight            float32    `json:"weight"`
+	CreatedAt   *time.Time `json:"createdAt,omitempty"`
+	Name        string     `json:"name"`
+	Price       float32    `json:"price"`
+	ProductUUID *string    `json:"productUUID,omitempty"`
+	Quantity    int        `json:"quantity"`
+	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+	Weight      float32    `json:"weight"`
 }
 
 // Products defines model for Products.
 type Products struct {
 	Items *[]Product `json:"items,omitempty"`
+}
+
+// AddProductsToLocationJSONBody defines parameters for AddProductsToLocation.
+type AddProductsToLocationJSONBody = []struct {
+	ProductUUID openapi_types.UUID `json:"productUUID"`
+	Quantity    int                `json:"quantity"`
 }
 
 // TransferProductsJSONBody defines parameters for TransferProducts.
@@ -60,5 +65,17 @@ type TransferProductsJSONBody struct {
 // CreateLocationJSONRequestBody defines body for CreateLocation for application/json ContentType.
 type CreateLocationJSONRequestBody = Location
 
+// UpdateLocationJSONRequestBody defines body for UpdateLocation for application/json ContentType.
+type UpdateLocationJSONRequestBody = Location
+
+// AddProductsToLocationJSONRequestBody defines body for AddProductsToLocation for application/json ContentType.
+type AddProductsToLocationJSONRequestBody = AddProductsToLocationJSONBody
+
+// CreateProductJSONRequestBody defines body for CreateProduct for application/json ContentType.
+type CreateProductJSONRequestBody = Product
+
 // TransferProductsJSONRequestBody defines body for TransferProducts for application/json ContentType.
 type TransferProductsJSONRequestBody TransferProductsJSONBody
+
+// UpdateProductJSONRequestBody defines body for UpdateProduct for application/json ContentType.
+type UpdateProductJSONRequestBody = Product

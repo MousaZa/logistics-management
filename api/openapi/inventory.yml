@@ -320,7 +320,7 @@ components:
   schemas:
     Product:
       type: object
-      required: [name, price, weight, quantity]
+      required: [name, price, weight]
       properties:
         productUUID:
           type: string

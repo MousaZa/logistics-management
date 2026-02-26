@@ -12,10 +12,12 @@ type Application struct {
 
 type Commands struct {
 	// Locations
-	AddLocation command.AddLocationHandler
+	AddLocation    command.AddLocationHandler
+	UpdateLocation command.UpdateLocationHandler
 
 	// Products
-	AddProduct command.AddProductHandler
+	AddProduct    command.AddProductHandler
+	UpdateProduct command.UpdateProductHandler
 
 	// Inventory
 	AddInventory command.AddInventoryHandler

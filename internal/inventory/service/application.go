@@ -25,9 +25,11 @@ func NewApplication(ctx context.Context) app.Application {
 
 	return app.Application{
 		Commands: app.Commands{
-			AddLocation: command.NewAddLocationHandler(locationsRepository, logger),
+			AddLocation:    command.NewAddLocationHandler(locationsRepository, logger),
+			UpdateLocation: command.NewUpdateLocationHandler(locationsRepository, logger),
 
-			AddProduct: command.NewAddProductHandler(productsRepository, logger),
+			AddProduct:    command.NewAddProductHandler(productsRepository, logger),
+			UpdateProduct: command.NewUpdateProductHandler(productsRepository, logger),
 
 			AddInventory: command.NewAddInventoryHandler(inventoryRepository, logger),
 		},

@@ -36,7 +36,7 @@ type Product struct {
 	Name        string     `json:"name"`
 	Price       float32    `json:"price"`
 	ProductUUID *string    `json:"productUUID,omitempty"`
-	Quantity    int        `json:"quantity"`
+	Quantity    *int       `json:"quantity,omitempty"`
 	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
 	Weight      float32    `json:"weight"`
 }

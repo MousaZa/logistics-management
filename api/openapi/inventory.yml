@@ -117,7 +117,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Products'
+                $ref: '#/components/schemas/ProductStocks'
         default:
           description: unexpected error
           content:
@@ -326,6 +326,25 @@ components:
           type: string
         name:
           type: string
+        weight:
+          type: number
+        price:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    ProductStock:
+      type: object
+      required: [ name, price, weight, quantity ]
+      properties:
+        productUUID:
+          type: string
+        name:
+          type: string
         quantity:
           type: integer
         weight:
@@ -338,6 +357,7 @@ components:
         updatedAt:
           type: string
           format: date-time
+
 
     Location:
       type: object
@@ -366,6 +386,15 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Product'
+
+    ProductStocks:
+      type: object
+      required: [ product_stocks ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductStock'
 
     Locations:
       type: object

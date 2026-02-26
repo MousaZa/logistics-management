@@ -17,7 +17,7 @@ type locationProductsHandler struct {
 	logger           *logrus.Entry
 }
 
-type LocationProductsHandler decorator.QueryHandler[LocationProducts, []*products.Product]
+type LocationProductsHandler decorator.QueryHandler[LocationProducts, []*products.ProductStock]
 
 func NewLocationProductsHandler(
 	locationProducts LocationProductsReadModel,
@@ -27,16 +27,16 @@ func NewLocationProductsHandler(
 		panic("nil locationProducts")
 	}
 
-	return decorator.ApplyQueryDecorators[LocationProducts, []*products.Product](
+	return decorator.ApplyQueryDecorators[LocationProducts, []*products.ProductStock](
 		locationProductsHandler{locationProducts: locationProducts, logger: logger},
 		logger,
 	)
 }
 
-func (h locationProductsHandler) Handle(ctx context.Context, q LocationProducts) ([]*products.Product, error) {
+func (h locationProductsHandler) Handle(ctx context.Context, q LocationProducts) ([]*products.ProductStock, error) {
 	return h.locationProducts.GetLocationProducts(ctx, q.LocationUUID)
 }
 
 type LocationProductsReadModel interface {
-	GetLocationProducts(ctx context.Context, LocationUUID string) ([]*products.Product, error)
+	GetLocationProducts(ctx context.Context, LocationUUID string) ([]*products.ProductStock, error)
 }

@@ -13,8 +13,8 @@ type PostgresInventoryRepository struct {
 	db *pgxpool.Pool
 }
 
-func (p PostgresInventoryRepository) GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.Product, error) {
-	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at
+func (p PostgresInventoryRepository) GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.ProductStock, error) {
+	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at, i.quantity
 			  FROM inventory i
 			  JOIN products p ON i.product_uuid = p.product_uuid
 			  WHERE i.location_uuid = $1`
@@ -25,10 +25,10 @@ func (p PostgresInventoryRepository) GetLocationProducts(ctx context.Context, lo
 	}
 	defer rows.Close()
 
-	var productsList []*products.Product
+	var productsList []*products.ProductStock
 	for rows.Next() {
-		var p products.Product
-		err := rows.Scan(&p.ProductUUID, &p.Name, &p.Price, &p.Weight, &p.CreatedAt, &p.UpdatedAt)
+		var p products.ProductStock
+		err := rows.Scan(&p.ProductUUID, &p.Name, &p.Price, &p.Weight, &p.CreatedAt, &p.UpdatedAt, &p.Quantity)
 		if err != nil {
 			return nil, err
 		}

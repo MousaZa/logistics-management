@@ -240,17 +240,16 @@ func (h HttpServer) GetLocationContents(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	resp := make([]Product, len(prods))
+	resp := make([]ProductStock, len(prods))
 	for i, p := range prods {
-		q := 999 // random quantity for now
-		resp[i] = Product{
+		resp[i] = ProductStock{
 			ProductUUID: &p.ProductUUID,
 			Name:        p.Name,
 			Price:       p.Price,
 			Weight:      p.Weight,
 			CreatedAt:   &p.CreatedAt,
 			UpdatedAt:   &p.UpdatedAt,
-			Quantity:    &q, //TODO add quantity to product struct
+			Quantity:    p.Quantity,
 		}
 	}
 

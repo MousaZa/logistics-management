@@ -991,7 +991,7 @@ func (r UpdateLocationResponse) StatusCode() int {
 type GetLocationContentsResponse struct {
 	Body         []byte
 	HTTPResponse *http.Response
-	JSON200      *Products
+	JSON200      *ProductStocks
 	JSONDefault  *Error
 }
 
@@ -1457,7 +1457,7 @@ func ParseGetLocationContentsResponse(rsp *http.Response) (*GetLocationContentsR
 
 	switch {
 	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && rsp.StatusCode == 200:
-		var dest Products
+		var dest ProductStocks
 		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
 			return nil, err
 		}

@@ -36,9 +36,24 @@ type Product struct {
 	Name        string     `json:"name"`
 	Price       float32    `json:"price"`
 	ProductUUID *string    `json:"productUUID,omitempty"`
-	Quantity    *int       `json:"quantity,omitempty"`
 	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
 	Weight      float32    `json:"weight"`
+}
+
+// ProductStock defines model for ProductStock.
+type ProductStock struct {
+	CreatedAt   *time.Time `json:"createdAt,omitempty"`
+	Name        string     `json:"name"`
+	Price       float32    `json:"price"`
+	ProductUUID *string    `json:"productUUID,omitempty"`
+	Quantity    int        `json:"quantity"`
+	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
+	Weight      float32    `json:"weight"`
+}
+
+// ProductStocks defines model for ProductStocks.
+type ProductStocks struct {
+	Items *[]ProductStock `json:"items,omitempty"`
 }
 
 // Products defines model for Products.

@@ -61,20 +61,18 @@ type Products struct {
 	Items *[]Product `json:"items,omitempty"`
 }
 
+// TransferProductRequest defines model for TransferProductRequest.
+type TransferProductRequest struct {
+	DestLocationUUID   openapi_types.UUID `json:"destLocationUUID"`
+	ProductUUID        openapi_types.UUID `json:"productUUID"`
+	Quantity           int                `json:"quantity"`
+	SourceLocationUUID openapi_types.UUID `json:"sourceLocationUUID"`
+}
+
 // AddProductsToLocationJSONBody defines parameters for AddProductsToLocation.
 type AddProductsToLocationJSONBody = []struct {
 	ProductUUID openapi_types.UUID `json:"productUUID"`
 	Quantity    int                `json:"quantity"`
-}
-
-// TransferProductsJSONBody defines parameters for TransferProducts.
-type TransferProductsJSONBody struct {
-	DestinationLocationUUID openapi_types.UUID `json:"destinationLocationUUID"`
-	Products                []struct {
-		ProductUUID openapi_types.UUID `json:"productUUID"`
-		Quantity    int                `json:"quantity"`
-	} `json:"products"`
-	SourceLocationUUID openapi_types.UUID `json:"sourceLocationUUID"`
 }
 
 // CreateLocationJSONRequestBody defines body for CreateLocation for application/json ContentType.
@@ -90,7 +88,7 @@ type AddProductsToLocationJSONRequestBody = AddProductsToLocationJSONBody
 type CreateProductJSONRequestBody = Product
 
 // TransferProductsJSONRequestBody defines body for TransferProducts for application/json ContentType.
-type TransferProductsJSONRequestBody TransferProductsJSONBody
+type TransferProductsJSONRequestBody = TransferProductRequest
 
 // UpdateProductJSONRequestBody defines body for UpdateProduct for application/json ContentType.
 type UpdateProductJSONRequestBody = Product

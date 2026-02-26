@@ -8,11 +8,11 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PostgresLocationsRepository struct {
+type LocationsRepository struct {
 	db *pgxpool.Pool
 }
 
-func (p PostgresLocationsRepository) AddLocation(ctx context.Context, location *locations.Location) error {
+func (p LocationsRepository) AddLocation(ctx context.Context, location *locations.Location) error {
 	query := `INSERT INTO locations (location_uuid, name, address, city) VALUES ($1, $2, $3, $4)`
 	_, err := p.db.Exec(ctx, query, location.LocationUUID, location.Name, location.Address, location.City)
 	if err != nil {
@@ -21,7 +21,7 @@ func (p PostgresLocationsRepository) AddLocation(ctx context.Context, location *
 	return nil
 }
 
-func (p PostgresLocationsRepository) GetAllLocations(ctx context.Context) ([]*locations.Location, error) {
+func (p LocationsRepository) GetAllLocations(ctx context.Context) ([]*locations.Location, error) {
 	query := `SELECT location_uuid, name, address, city, created_at, updated_at FROM locations`
 
 	rows, err := p.db.Query(ctx, query)
@@ -47,7 +47,7 @@ func (p PostgresLocationsRepository) GetAllLocations(ctx context.Context) ([]*lo
 	return locationsList, nil
 }
 
-func (p PostgresLocationsRepository) GetLocation(ctx context.Context, locationUUID string) (*locations.Location, error) {
+func (p LocationsRepository) GetLocation(ctx context.Context, locationUUID string) (*locations.Location, error) {
 	query := `SELECT location_uuid, name, address, city, created_at, updated_at FROM locations WHERE location_uuid = $1`
 
 	row := p.db.QueryRow(ctx, query, locationUUID)
@@ -61,7 +61,7 @@ func (p PostgresLocationsRepository) GetLocation(ctx context.Context, locationUU
 	return &l, nil
 }
 
-func (p PostgresLocationsRepository) UpdateLocation(ctx context.Context, locationUUID string, updateFunc func(ctx context.Context, p *locations.Location) (*locations.Location, error)) error {
+func (p LocationsRepository) UpdateLocation(ctx context.Context, locationUUID string, updateFunc func(ctx context.Context, p *locations.Location) (*locations.Location, error)) error {
 	query := `SELECT location_uuid, name, address, city, created_at, updated_at FROM locations WHERE location_uuid = $1`
 
 	row := p.db.QueryRow(ctx, query, locationUUID)
@@ -86,10 +86,10 @@ func (p PostgresLocationsRepository) UpdateLocation(ctx context.Context, locatio
 	return nil
 }
 
-func NewPostgresLocationsRepository(db *pgxpool.Pool) *PostgresLocationsRepository {
+func NewPostgresLocationsRepository(db *pgxpool.Pool) *LocationsRepository {
 	if db == nil {
 		panic("missing db")
 	}
 
-	return &PostgresLocationsRepository{db: db}
+	return &LocationsRepository{db: db}
 }

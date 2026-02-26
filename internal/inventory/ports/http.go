@@ -229,8 +229,22 @@ func (h HttpServer) CreateLocation(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h HttpServer) TransferProducts(w http.ResponseWriter, r *http.Request) {
-	//TODO implement me
-	panic("implement me")
+	req := &TransferProductRequest{}
+	err := json.NewDecoder(r.Body).Decode(req)
+	if err != nil {
+		fmt.Println(err)
+		httperr.BadRequest("invalid-request-body", err, w, r)
+		return
+	}
+
+	err = h.app.Commands.TransferProduct.Handle(r.Context(), command.TransferProduct{SourceLocationUUID: req.SourceLocationUUID.String(), DestinationLocationUUID: req.DestLocationUUID.String(), ProductUUID: req.ProductUUID.String(), Quantity: req.Quantity})
+	if err != nil {
+		fmt.Println(err)
+		httperr.InternalError("unable-to-transfer-product", err, w, r)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func (h HttpServer) GetLocationContents(w http.ResponseWriter, r *http.Request, locationUUID types.UUID) {

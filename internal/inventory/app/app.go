@@ -20,7 +20,8 @@ type Commands struct {
 	UpdateProduct command.UpdateProductHandler
 
 	// Inventory
-	AddInventory command.AddInventoryHandler
+	AddInventory    command.AddInventoryHandler
+	TransferProduct command.TransferProductHandler
 }
 
 type Queries struct {

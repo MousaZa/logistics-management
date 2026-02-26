@@ -8,19 +8,19 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PostgresProductsRepository struct {
+type ProductsRepository struct {
 	db *pgxpool.Pool
 }
 
-func NewPostgresProductsRepository(db *pgxpool.Pool) *PostgresProductsRepository {
+func NewPostgresProductsRepository(db *pgxpool.Pool) *ProductsRepository {
 	if db == nil {
 		panic("missing db")
 	}
 
-	return &PostgresProductsRepository{db: db}
+	return &ProductsRepository{db: db}
 }
 
-func (p PostgresProductsRepository) AddProduct(ctx context.Context, product *products.Product) error {
+func (p ProductsRepository) AddProduct(ctx context.Context, product *products.Product) error {
 	query := `INSERT INTO products (product_uuid, name, price, weight) VALUES ($1, $2, $3, $4)`
 
 	_, err := p.db.Exec(ctx, query,
@@ -36,7 +36,7 @@ func (p PostgresProductsRepository) AddProduct(ctx context.Context, product *pro
 	return nil
 }
 
-func (p PostgresProductsRepository) GetAllProducts(ctx context.Context) ([]*products.Product, error) {
+func (p ProductsRepository) GetAllProducts(ctx context.Context) ([]*products.Product, error) {
 	query := `SELECT product_uuid, name, price, weight, created_at, updated_at FROM products`
 
 	rows, err := p.db.Query(ctx, query)
@@ -62,7 +62,7 @@ func (p PostgresProductsRepository) GetAllProducts(ctx context.Context) ([]*prod
 	return productsList, nil
 }
 
-func (p PostgresProductsRepository) GetProduct(ctx context.Context, productUUID string) (*products.Product, error) {
+func (p ProductsRepository) GetProduct(ctx context.Context, productUUID string) (*products.Product, error) {
 	query := `SELECT product_uuid, name, price, weight, created_at, updated_at FROM products WHERE product_uuid = $1`
 
 	var pr products.Product
@@ -74,7 +74,7 @@ func (p PostgresProductsRepository) GetProduct(ctx context.Context, productUUID 
 	return &pr, nil
 }
 
-func (p PostgresProductsRepository) UpdateProduct(ctx context.Context, productUUID string, updateFunc func(ctx context.Context, p *products.Product) (*products.Product, error)) error {
+func (p ProductsRepository) UpdateProduct(ctx context.Context, productUUID string, updateFunc func(ctx context.Context, p *products.Product) (*products.Product, error)) error {
 	query := `SELECT product_uuid, name, price, weight, created_at, updated_at FROM products WHERE product_uuid = $1`
 
 	var pr products.Product

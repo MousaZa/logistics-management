@@ -281,26 +281,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              required: [ sourceLocationUUID, destinationLocationUUID, products ]
-              properties:
-                sourceLocationUUID:
-                  type: string
-                  format: uuid
-                destinationLocationUUID:
-                  type: string
-                  format: uuid
-                products:
-                  type: array
-                  items:
-                    type: object
-                    required: [ productUUID, quantity ]
-                    properties:
-                      productUUID:
-                        type: string
-                        format: uuid
-                      quantity:
-                        type: integer
+              $ref: '#/components/schemas/TransferProductRequest'
       responses:
         '204':
           description: todo
@@ -336,6 +317,22 @@ components:
         updatedAt:
           type: string
           format: date-time
+
+    TransferProductRequest:
+      type: object
+      required: [ sourceLocationUUID, destLocationUUID ,productUUID, quantity ]
+      properties:
+        sourceLocationUUID:
+          type: string
+          format: uuid
+        destLocationUUID:
+          type: string
+          format: uuid
+        productUUID:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
 
     ProductStock:
       type: object

@@ -9,11 +9,49 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type PostgresInventoryRepository struct {
+type InventoryRepository struct {
 	db *pgxpool.Pool
 }
 
-func (p PostgresInventoryRepository) GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.ProductStock, error) {
+func (p InventoryRepository) GetInventory(ctx context.Context, productUUID, locationUUID string) (*inventory.Inventory, error) {
+	query := `SELECT product_uuid, location_uuid, quantity FROM inventory WHERE product_uuid = $1 AND location_uuid = $2`
+
+	row := p.db.QueryRow(ctx, query, productUUID, locationUUID)
+
+	var inv inventory.Inventory
+	err := row.Scan(&inv.ProductUUID, &inv.LocationUUID, &inv.Quantity)
+	if err != nil {
+		return nil, err
+	}
+
+	return &inv, nil
+}
+
+func (p InventoryRepository) UpdateMultipleInventories(ctx context.Context, inventories ...*inventory.Inventory) error {
+	tx, err := p.db.Begin(ctx)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback(ctx) // Safe to call even if committed
+
+	query := `
+        INSERT INTO inventory (product_uuid, location_uuid, quantity) 
+        VALUES ($1, $2, $3)
+        ON CONFLICT (product_uuid, location_uuid) 
+        DO UPDATE SET quantity = EXCLUDED.quantity;
+    `
+
+	for _, item := range inventories {
+		_, err := tx.Exec(ctx, query, item.ProductUUID, item.LocationUUID, item.Quantity)
+		if err != nil {
+			return err // This triggers the rollback
+		}
+	}
+
+	return tx.Commit(ctx)
+}
+
+func (p InventoryRepository) GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.ProductStock, error) {
 	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at, i.quantity
 			  FROM inventory i
 			  JOIN products p ON i.product_uuid = p.product_uuid
@@ -42,7 +80,7 @@ func (p PostgresInventoryRepository) GetLocationProducts(ctx context.Context, lo
 	return productsList, nil
 }
 
-func (p PostgresInventoryRepository) GetProductLocations(ctx context.Context, productUUID string) ([]*locations.Location, error) {
+func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUID string) ([]*locations.Location, error) {
 	query := `SELECT l.location_uuid, l.name, l.address, l.city, l.created_at, l.updated_at
 			  FROM inventory i
 			  JOIN locations l ON i.location_uuid = l.location_uuid
@@ -71,7 +109,7 @@ func (p PostgresInventoryRepository) GetProductLocations(ctx context.Context, pr
 	return locationsList, nil
 }
 
-func (p PostgresInventoryRepository) AddInventory(ctx context.Context, inventory *inventory.Inventory) error {
+func (p InventoryRepository) AddInventory(ctx context.Context, inventory *inventory.Inventory) error {
 	query := `INSERT INTO inventory (location_uuid, product_uuid, quantity) VALUES ($1, $2, $3)`
 
 	_, err := p.db.Exec(ctx, query,
@@ -86,10 +124,10 @@ func (p PostgresInventoryRepository) AddInventory(ctx context.Context, inventory
 	return nil
 }
 
-func NewPostgresInventoryRepository(db *pgxpool.Pool) *PostgresInventoryRepository {
+func NewPostgresInventoryRepository(db *pgxpool.Pool) *InventoryRepository {
 	if db == nil {
 		panic("missing db")
 	}
 
-	return &PostgresInventoryRepository{db: db}
+	return &InventoryRepository{db: db}
 }

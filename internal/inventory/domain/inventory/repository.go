@@ -10,6 +10,8 @@ import (
 type Repository interface {
 	GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.ProductStock, error)
 	GetProductLocations(ctx context.Context, productUUID string) ([]*locations.Location, error)
+	GetInventory(ctx context.Context, productUUID, locationUUID string) (*Inventory, error)
 
 	AddInventory(ctx context.Context, inventory *Inventory) error
+	UpdateMultipleInventories(ctx context.Context, inventories ...*Inventory) error
 }

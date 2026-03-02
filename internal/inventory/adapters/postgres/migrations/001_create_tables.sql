@@ -25,6 +25,7 @@ CREATE TABLE inventory (
     location_uuid UUID NOT NULL REFERENCES locations(location_uuid) ON DELETE RESTRICT,
 
     quantity INT NOT NULL DEFAULT 0,
+    status TEXT NOT NULL CHECK (status IN ('available', 'reserved', 'damaged')),
 
     -- Prevent negative inventory at the database level
     CONSTRAINT chk_quantity_non_negative CHECK (quantity >= 0),

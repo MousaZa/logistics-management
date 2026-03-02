@@ -2,10 +2,19 @@ package inventory
 
 import "errors"
 
+type Status string
+
+const (
+	StatusAvailable Status = "available"
+	StatusReserved  Status = "reserved"
+	StatusDamaged   Status = "damaged"
+)
+
 type Inventory struct {
 	ProductUUID  string
 	LocationUUID string
 	Quantity     int
+	Status       Status
 }
 
 func NewInventory(productUUID string, locationUUID string, quantity int) (*Inventory, error) {
@@ -23,6 +32,7 @@ func NewInventory(productUUID string, locationUUID string, quantity int) (*Inven
 		ProductUUID:  productUUID,
 		LocationUUID: locationUUID,
 		Quantity:     quantity,
+		Status:       StatusAvailable,
 	}, nil
 }
 

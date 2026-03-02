@@ -64,20 +64,26 @@ func (h HttpServer) UpdateLocation(w http.ResponseWriter, r *http.Request, locat
 }
 
 type AddProductsToLocationRequest struct {
-	ProductUUID types.UUID `json:"product_uuid"`
+	ProductUUID types.UUID `json:"ProductUUID"`
 	Quantity    int        `json:"quantity"`
 }
 
 func (h HttpServer) AddProductsToLocation(w http.ResponseWriter, r *http.Request, locationUUID types.UUID) {
-	req := &AddProductsToLocationRequest{}
-	err := json.NewDecoder(r.Body).Decode(req)
+	var req []*AddProductsToLocationRequest
+	body, err := io.ReadAll(r.Body)
+	fmt.Printf("%s\n", body)
+	err = json.Unmarshal(body, &req)
+	fmt.Println(*req[0])
+
 	if err != nil {
+		fmt.Println(err)
 		httperr.BadRequest("invalid-request-body", err, w, r)
 		return
 	}
 
-	err = h.app.Commands.AddInventory.Handle(r.Context(), command.AddInventory{LocationUUID: locationUUID.String(), ProductUUID: req.ProductUUID.String(), Quantity: req.Quantity})
+	err = h.app.Commands.AddInventory.Handle(r.Context(), command.AddInventory{LocationUUID: locationUUID.String(), ProductUUID: req[0].ProductUUID.String(), Quantity: req[0].Quantity})
 	if err != nil {
+		fmt.Println(err)
 		httperr.InternalError("unable-to-add-products-to-location", err, w, r)
 		return
 	}

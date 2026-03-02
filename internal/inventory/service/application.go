@@ -42,6 +42,7 @@ func NewApplication(ctx context.Context) app.Application {
 			AllProducts:   query.NewAllProductsHandler(productsRepository, logger),
 
 			LocationProducts: query.NewLocationProductsHandler(inventoryRepository, logger),
+			ProductLocations: query.NewProductLocationsHandler(inventoryRepository, logger),
 		},
 	}
 }

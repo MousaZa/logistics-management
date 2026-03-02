@@ -110,12 +110,13 @@ func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUI
 }
 
 func (p InventoryRepository) AddInventory(ctx context.Context, inventory *inventory.Inventory) error {
-	query := `INSERT INTO inventory (location_uuid, product_uuid, quantity) VALUES ($1, $2, $3)`
+	query := `INSERT INTO inventory (location_uuid, product_uuid, quantity, status) VALUES ($1, $2, $3, $4)`
 
 	_, err := p.db.Exec(ctx, query,
 		inventory.LocationUUID,
 		inventory.ProductUUID,
 		inventory.Quantity,
+		inventory.Status,
 	)
 
 	if err != nil {

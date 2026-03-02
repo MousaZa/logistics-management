@@ -2,3 +2,5 @@
 .env
 .go/
 .go-cache/
+web/node_modules/
+web/

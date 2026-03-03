@@ -80,8 +80,8 @@ func (p InventoryRepository) GetLocationProducts(ctx context.Context, locationUU
 	return productsList, nil
 }
 
-func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUID string) ([]*locations.Location, error) {
-	query := `SELECT l.location_uuid, l.name, l.address, l.city, l.created_at, l.updated_at
+func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUID string) ([]*locations.ProductLocationInventory, error) {
+	query := `SELECT l.location_uuid, l.name, l.address, l.city, l.created_at, l.updated_at, i.quantity
 			  FROM inventory i
 			  JOIN locations l ON i.location_uuid = l.location_uuid
 			  WHERE i.product_uuid = $1`
@@ -92,10 +92,10 @@ func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUI
 	}
 	defer rows.Close()
 
-	var locationsList []*locations.Location
+	var locationsList []*locations.ProductLocationInventory
 	for rows.Next() {
-		var l locations.Location
-		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
+		var l locations.ProductLocationInventory
+		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt, &l.Quantity)
 		if err != nil {
 			return nil, err
 		}

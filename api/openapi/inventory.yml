@@ -265,7 +265,8 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Locations'
+                  $ref: '#/components/schemas/ProductLocationInventory'
+
         default:
           description: unexpected error
           content:
@@ -374,6 +375,25 @@ components:
         updatedAt:
           type: string
           format: date-time
+
+    ProductLocationInventory:
+      description: A location along with the stock quantity for a specific product
+      allOf:
+        - $ref: '#/components/schemas/Location'
+        - type: object
+          properties:
+            quantity:
+              type: integer
+              description: The quantity of the product available at this location
+              example: 42
+    ProductLocationInventories:
+      type: object
+      required: [ items ]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductLocationInventory'
 
     Products:
       type: object

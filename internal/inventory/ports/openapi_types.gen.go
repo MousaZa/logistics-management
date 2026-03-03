@@ -40,6 +40,19 @@ type Product struct {
 	Weight      float32    `json:"weight"`
 }
 
+// ProductLocationInventory defines model for ProductLocationInventory.
+type ProductLocationInventory struct {
+	Address      string     `json:"address"`
+	City         string     `json:"city"`
+	CreatedAt    *time.Time `json:"createdAt,omitempty"`
+	LocationUUID *string    `json:"locationUUID,omitempty"`
+	Name         string     `json:"name"`
+
+	// Quantity The quantity of the product available at this location
+	Quantity  *int       `json:"quantity,omitempty"`
+	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+}
+
 // ProductStock defines model for ProductStock.
 type ProductStock struct {
 	CreatedAt   *time.Time `json:"createdAt,omitempty"`

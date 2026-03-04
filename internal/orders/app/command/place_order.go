@@ -39,12 +39,12 @@ func (h placeOrderHandler) Handle(ctx context.Context, cmd PlaceOrder) error {
 		return err
 	}
 
-	//productsUUIDs := productsUUIDsFromLineItems(cmd.LineItems) // TODO move this logic to domain layer
-	//
-	//err = h.eventBus.Publish(ctx, &orders.OrderPlacedEvent{OrderUUID: order.OrderUUID, ProductsUUIDs: productsUUIDs})
-	//if err != nil {
-	//	return err
-	//}
+	productsUUIDs := orders.ProductsUUIDsFromLineItems(cmd.LineItems) // TODO move this logic to domain layer
+
+	err = h.eventBus.Publish(ctx, &orders.OrderPlacedEvent{OrderUUID: order.OrderUUID, ProductsUUIDs: productsUUIDs})
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

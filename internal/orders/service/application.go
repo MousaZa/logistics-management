@@ -28,7 +28,7 @@ func NewApplication(ctx context.Context) app.Application {
 
 	watermillLogger := watermill.NewStdLogger(true, true)
 
-	publisher, err := kafka_adapter.NewPublisher([]string{"localhost:9092"}, watermillLogger)
+	publisher, err := kafka_adapter.NewPublisher([]string{"kafka:29092"}, watermillLogger)
 	if err != nil {
 		panic(err)
 	}

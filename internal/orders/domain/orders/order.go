@@ -81,3 +81,11 @@ func (o *Order) UpdateStatus(s OrderStatus) error {
 	o.Status = s
 	return nil
 }
+
+func ProductsUUIDsFromLineItems(lineItems []LineItem) []string {
+	var productsUUIDs []string
+	for _, item := range lineItems {
+		productsUUIDs = append(productsUUIDs, item.ProductUUID)
+	}
+	return productsUUIDs
+}

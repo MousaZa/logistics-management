@@ -25,7 +25,7 @@ func RunMigrations(ctx context.Context, pool *pgxpool.Pool) error {
 
 	rawConn := poolConn.Conn()
 
-	migrator, err := migrate.NewMigrator(ctx, rawConn, "schema_version")
+	migrator, err := migrate.NewMigrator(ctx, rawConn, "orders_schema_version")
 	if err != nil {
 		return fmt.Errorf("unable to create migrator: %w", err)
 	}

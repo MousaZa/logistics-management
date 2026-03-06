@@ -135,8 +135,12 @@ func (h HttpServer) GetOrderById(w http.ResponseWriter, r *http.Request, orderUU
 }
 
 func (h HttpServer) CancelOrder(w http.ResponseWriter, r *http.Request, orderUUID openapi_types.UUID) {
-	//TODO implement me
-	panic("implement me")
+	err := h.app.Commands.CancelOrder.Handle(r.Context(), command.CancelOrder{OrderUUID: orderUUID.String()})
+	if err != nil {
+		httperr.InternalError("unable-to-cancel", err, w, r)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func NewHttpServer(application app.Application) HttpServer {

@@ -45,6 +45,7 @@ func NewApplication(ctx context.Context) app.Application {
 		Commands: app.Commands{
 			PlaceOrder:   command.NewPlaceOrderHandler(eventBus, ordersRepository, logger),
 			ConfirmOrder: command.NewConfirmOrderHandler(nil, ordersRepository, logger),
+			CancelOrder:  command.NewCancelOrderHandler(eventBus, ordersRepository, logger),
 		},
 		Queries: app.Queries{
 			AllOrders: query.NewAllOrdersHandler(ordersRepository, logger),

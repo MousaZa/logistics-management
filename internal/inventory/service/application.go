@@ -77,9 +77,12 @@ func NewApplication(ctx context.Context) app.Application {
 
 	// 5. Start the engine (this blocks and runs forever)
 	fmt.Println("Starting Inventory Event Router...")
-	if err := router.Run(context.Background()); err != nil {
-		panic(err)
-	}
+	go func() {
+		err := router.Run(context.Background())
+		if err != nil {
+			panic(err)
+		}
+	}()
 
 	return app.Application{
 		Commands: app.Commands{

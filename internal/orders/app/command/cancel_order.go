@@ -11,7 +11,7 @@ import (
 )
 
 type CancelOrder struct {
-	orderUUID string
+	OrderUUID string
 }
 
 type CancelOrderHandler decorator.CommandHandler[CancelOrder]
@@ -26,7 +26,7 @@ func NewCancelOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository, logg
 }
 
 func (h cancelOrderHandler) Handle(ctx context.Context, cmd CancelOrder) error {
-	if err := h.repo.UpdateOrder(ctx, cmd.orderUUID, func(ctx context.Context, o *orders.Order) (*orders.Order, error) {
+	if err := h.repo.UpdateOrder(ctx, cmd.OrderUUID, func(ctx context.Context, o *orders.Order) (*orders.Order, error) {
 		err := o.UpdateStatus(orders.Cancelled)
 		if err != nil {
 			return nil, err
@@ -34,6 +34,11 @@ func (h cancelOrderHandler) Handle(ctx context.Context, cmd CancelOrder) error {
 		return o, nil
 	}); err != nil {
 		return errors.NewSlugError(err.Error(), "unable-to-update-order")
+	}
+
+	err := h.eventBus.Publish(ctx, &orders.OrderCanceledEvent{OrderUUID: cmd.OrderUUID})
+	if err != nil {
+		return err
 	}
 	return nil
 }

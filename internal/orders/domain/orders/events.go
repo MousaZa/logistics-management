@@ -15,3 +15,7 @@ type OrderPlacedEvent struct {
 	OrderUUID string
 	LineItems []EventLineItem
 }
+
+type OrderCanceledEvent struct {
+	OrderUUID string
+}

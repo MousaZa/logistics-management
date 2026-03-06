@@ -6,7 +6,12 @@ type OrderEvent struct {
 	Published bool
 }
 
+type EventLineItem struct {
+	ProductUUID string
+	Quantity    int
+}
+
 type OrderPlacedEvent struct {
-	OrderUUID     string
-	ProductsUUIDs []string
+	OrderUUID string
+	LineItems []EventLineItem
 }

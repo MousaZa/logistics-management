@@ -3,7 +3,7 @@ module github.com/MousaZa/logistics-management/internal/inventory
 go 1.25.6
 
 require (
-	github.com/MousaZa/logistics-management/internal/common v0.0.0-20260210133247-75c450277a58
+	github.com/MousaZa/logistics-management/internal/common v0.0.0-20260304204100-edbec78e0bc8
 	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-chi/render v1.0.3
 	github.com/google/uuid v1.6.0
@@ -23,6 +23,7 @@ require (
 	github.com/ThreeDotsLabs/watermill-kafka/v3 v3.1.2 // indirect
 	github.com/ajg/form v1.5.1 // indirect
 	github.com/apapsch/go-jsonmerge/v2 v2.0.0 // indirect
+	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dnwe/otelsarama v0.0.0-20240308230250-9388d9d40bc0 // indirect
 	github.com/eapache/go-resiliency v1.7.0 // indirect
@@ -31,6 +32,7 @@ require (
 	github.com/go-chi/cors v1.2.2 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -53,6 +55,7 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
+	github.com/sony/gobreaker v1.0.0 // indirect
 	github.com/spf13/cast v1.7.0 // indirect
 	go.opentelemetry.io/otel v1.29.0 // indirect
 	go.opentelemetry.io/otel/metric v1.29.0 // indirect

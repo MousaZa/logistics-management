@@ -13,6 +13,7 @@ type Application struct {
 type Commands struct {
 	PlaceOrder   command.PlaceOrderHandler
 	ConfirmOrder command.ConfirmOrderHandler
+	CancelOrder  command.CancelOrderHandler
 }
 
 type Queries struct {

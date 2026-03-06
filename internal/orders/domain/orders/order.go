@@ -82,10 +82,10 @@ func (o *Order) UpdateStatus(s OrderStatus) error {
 	return nil
 }
 
-func ProductsUUIDsFromLineItems(lineItems []LineItem) []string {
-	var productsUUIDs []string
+func EventLineItemsFromLineItems(lineItems []LineItem) []EventLineItem {
+	var eventLineItems []EventLineItem
 	for _, item := range lineItems {
-		productsUUIDs = append(productsUUIDs, item.ProductUUID)
+		eventLineItems = append(eventLineItems, EventLineItem{ProductUUID: item.ProductUUID, Quantity: item.Quantity})
 	}
-	return productsUUIDs
+	return eventLineItems
 }

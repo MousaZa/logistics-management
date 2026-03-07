@@ -150,16 +150,56 @@ paths:
                         format: uuid
                       quantity:
                         type: integer
-
         responses:
-            '204':
-              description: todo
-            default:
-              description: unexpected error
-              content:
-                application/json:
-                  schema:
-                    $ref: '#/components/schemas/Error'
+          '204':
+            description: todo
+          default:
+            description: unexpected error
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/Error'
+  /locations/{locationUUID}/products/{productUUID}/report-damage:
+    put:
+      operationId: reportDamagedProduct
+      parameters:
+        - in: path
+          name: locationUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+        - in: path
+          name: productUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+      requestBody:
+        description: todo
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [ reason, quantity ]
+              properties:
+                reason:
+                  type: string
+                quantity:
+                  type: integer
+      responses:
+        '204':
+          description: todo
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
   /products:
     post:
       operationId: createProduct
@@ -292,6 +332,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
 
 components:
   #  securitySchemes:

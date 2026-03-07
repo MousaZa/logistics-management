@@ -114,6 +114,11 @@ type ClientInterface interface {
 
 	AddProductsToLocation(ctx context.Context, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
+	// ReportDamagedProductWithBody request with any body
+	ReportDamagedProductWithBody(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+
+	ReportDamagedProduct(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, body ReportDamagedProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+
 	// GetProductLocations request
 	GetProductLocations(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*http.Response, error)
 
@@ -237,6 +242,30 @@ func (c *Client) AddProductsToLocationWithBody(ctx context.Context, locationUUID
 
 func (c *Client) AddProductsToLocation(ctx context.Context, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewAddProductsToLocationRequest(c.Server, locationUUID, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReportDamagedProductWithBody(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReportDamagedProductRequestWithBody(c.Server, locationUUID, productUUID, contentType, body)
+	if err != nil {
+		return nil, err
+	}
+	req = req.WithContext(ctx)
+	if err := c.applyEditors(ctx, req, reqEditors); err != nil {
+		return nil, err
+	}
+	return c.Client.Do(req)
+}
+
+func (c *Client) ReportDamagedProduct(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, body ReportDamagedProductJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewReportDamagedProductRequest(c.Server, locationUUID, productUUID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -584,6 +613,60 @@ func NewAddProductsToLocationRequestWithBody(server string, locationUUID openapi
 	return req, nil
 }
 
+// NewReportDamagedProductRequest calls the generic ReportDamagedProduct builder with application/json body
+func NewReportDamagedProductRequest(server string, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, body ReportDamagedProductJSONRequestBody) (*http.Request, error) {
+	var bodyReader io.Reader
+	buf, err := json.Marshal(body)
+	if err != nil {
+		return nil, err
+	}
+	bodyReader = bytes.NewReader(buf)
+	return NewReportDamagedProductRequestWithBody(server, locationUUID, productUUID, "application/json", bodyReader)
+}
+
+// NewReportDamagedProductRequestWithBody generates requests for ReportDamagedProduct with any type of body
+func NewReportDamagedProductRequestWithBody(server string, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, contentType string, body io.Reader) (*http.Request, error) {
+	var err error
+
+	var pathParam0 string
+
+	pathParam0, err = runtime.StyleParamWithLocation("simple", false, "locationUUID", runtime.ParamLocationPath, locationUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	var pathParam1 string
+
+	pathParam1, err = runtime.StyleParamWithLocation("simple", false, "productUUID", runtime.ParamLocationPath, productUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	serverURL, err := url.Parse(server)
+	if err != nil {
+		return nil, err
+	}
+
+	operationPath := fmt.Sprintf("/locations/%s/products/%s/report-damage", pathParam0, pathParam1)
+	if operationPath[0] == '/' {
+		operationPath = "." + operationPath
+	}
+
+	queryURL, err := serverURL.Parse(operationPath)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("PUT", queryURL.String(), body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Add("Content-Type", contentType)
+
+	return req, nil
+}
+
 // NewGetProductLocationsRequest generates requests for GetProductLocations
 func NewGetProductLocationsRequest(server string, productUUID openapi_types.UUID) (*http.Request, error) {
 	var err error
@@ -873,6 +956,11 @@ type ClientWithResponsesInterface interface {
 
 	AddProductsToLocationWithResponse(ctx context.Context, locationUUID openapi_types.UUID, body AddProductsToLocationJSONRequestBody, reqEditors ...RequestEditorFn) (*AddProductsToLocationResponse, error)
 
+	// ReportDamagedProductWithBodyWithResponse request with any body
+	ReportDamagedProductWithBodyWithResponse(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportDamagedProductResponse, error)
+
+	ReportDamagedProductWithResponse(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, body ReportDamagedProductJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportDamagedProductResponse, error)
+
 	// GetProductLocationsWithResponse request
 	GetProductLocationsWithResponse(ctx context.Context, productUUID openapi_types.UUID, reqEditors ...RequestEditorFn) (*GetProductLocationsResponse, error)
 
@@ -1027,6 +1115,28 @@ func (r AddProductsToLocationResponse) Status() string {
 
 // StatusCode returns HTTPResponse.StatusCode
 func (r AddProductsToLocationResponse) StatusCode() int {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.StatusCode
+	}
+	return 0
+}
+
+type ReportDamagedProductResponse struct {
+	Body         []byte
+	HTTPResponse *http.Response
+	JSONDefault  *Error
+}
+
+// Status returns HTTPResponse.Status
+func (r ReportDamagedProductResponse) Status() string {
+	if r.HTTPResponse != nil {
+		return r.HTTPResponse.Status
+	}
+	return http.StatusText(0)
+}
+
+// StatusCode returns HTTPResponse.StatusCode
+func (r ReportDamagedProductResponse) StatusCode() int {
 	if r.HTTPResponse != nil {
 		return r.HTTPResponse.StatusCode
 	}
@@ -1244,6 +1354,23 @@ func (c *ClientWithResponses) AddProductsToLocationWithResponse(ctx context.Cont
 		return nil, err
 	}
 	return ParseAddProductsToLocationResponse(rsp)
+}
+
+// ReportDamagedProductWithBodyWithResponse request with arbitrary body returning *ReportDamagedProductResponse
+func (c *ClientWithResponses) ReportDamagedProductWithBodyWithResponse(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ReportDamagedProductResponse, error) {
+	rsp, err := c.ReportDamagedProductWithBody(ctx, locationUUID, productUUID, contentType, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReportDamagedProductResponse(rsp)
+}
+
+func (c *ClientWithResponses) ReportDamagedProductWithResponse(ctx context.Context, locationUUID openapi_types.UUID, productUUID openapi_types.UUID, body ReportDamagedProductJSONRequestBody, reqEditors ...RequestEditorFn) (*ReportDamagedProductResponse, error) {
+	rsp, err := c.ReportDamagedProduct(ctx, locationUUID, productUUID, body, reqEditors...)
+	if err != nil {
+		return nil, err
+	}
+	return ParseReportDamagedProductResponse(rsp)
 }
 
 // GetProductLocationsWithResponse request returning *GetProductLocationsResponse
@@ -1484,6 +1611,32 @@ func ParseAddProductsToLocationResponse(rsp *http.Response) (*AddProductsToLocat
 	}
 
 	response := &AddProductsToLocationResponse{
+		Body:         bodyBytes,
+		HTTPResponse: rsp,
+	}
+
+	switch {
+	case strings.Contains(rsp.Header.Get("Content-Type"), "json") && true:
+		var dest Error
+		if err := json.Unmarshal(bodyBytes, &dest); err != nil {
+			return nil, err
+		}
+		response.JSONDefault = &dest
+
+	}
+
+	return response, nil
+}
+
+// ParseReportDamagedProductResponse parses an HTTP response from a ReportDamagedProductWithResponse call
+func ParseReportDamagedProductResponse(rsp *http.Response) (*ReportDamagedProductResponse, error) {
+	bodyBytes, err := io.ReadAll(rsp.Body)
+	defer func() { _ = rsp.Body.Close() }()
+	if err != nil {
+		return nil, err
+	}
+
+	response := &ReportDamagedProductResponse{
 		Body:         bodyBytes,
 		HTTPResponse: rsp,
 	}

@@ -94,6 +94,12 @@ type AddProductsToLocationJSONBody = []struct {
 	Quantity    int                `json:"quantity"`
 }
 
+// ReportDamagedProductJSONBody defines parameters for ReportDamagedProduct.
+type ReportDamagedProductJSONBody struct {
+	Quantity int    `json:"quantity"`
+	Reason   string `json:"reason"`
+}
+
 // CreateLocationJSONRequestBody defines body for CreateLocation for application/json ContentType.
 type CreateLocationJSONRequestBody = Location
 
@@ -102,6 +108,9 @@ type UpdateLocationJSONRequestBody = Location
 
 // AddProductsToLocationJSONRequestBody defines body for AddProductsToLocation for application/json ContentType.
 type AddProductsToLocationJSONRequestBody = AddProductsToLocationJSONBody
+
+// ReportDamagedProductJSONRequestBody defines body for ReportDamagedProduct for application/json ContentType.
+type ReportDamagedProductJSONRequestBody ReportDamagedProductJSONBody
 
 // CreateProductJSONRequestBody defines body for CreateProduct for application/json ContentType.
 type CreateProductJSONRequestBody = Product

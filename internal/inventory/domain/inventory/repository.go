@@ -14,4 +14,12 @@ type Repository interface {
 
 	AddInventory(ctx context.Context, inventory *Inventory) error
 	UpdateMultipleInventories(ctx context.Context, inventories ...*Inventory) error
+	UpdateInventory(
+		ctx context.Context,
+		locationUUID string,
+		productUUID string,
+		updateFunc func(
+			ctx context.Context,
+			i *Inventory,
+		) (*Inventory, error)) error
 }

@@ -18,6 +18,27 @@ type HttpServer struct {
 	app app.Application
 }
 
+type ReportDamagedRequest struct {
+	Quantity int
+	Reason   string
+}
+
+func (h HttpServer) ReportDamagedProduct(w http.ResponseWriter, r *http.Request, locationUUID types.UUID, productUUID types.UUID) {
+	locUUID := locationUUID.String()
+	prodUUID := productUUID.String()
+
+	var req ReportDamagedRequest
+	body, err := io.ReadAll(r.Body)
+	err = json.Unmarshal(body, &req)
+	if err != nil {
+		httperr.BadRequest("invalid-request-body", err, w, r)
+		return
+	}
+
+	h.app.Commands.ReportDamaged.Handle(r.Context(), command.ReportDamaged{ProductUUID: prodUUID, LocationUUID: locUUID, Quantity: req.Quantity, Reason: req.Reason})
+
+}
+
 func (h HttpServer) GetLocationByUUID(w http.ResponseWriter, r *http.Request, locationUUID types.UUID) {
 	uuids := locationUUID.String()
 

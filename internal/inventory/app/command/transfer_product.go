@@ -39,10 +39,10 @@ func (h transferProductHandler) Handle(ctx context.Context, cmd TransferProduct)
 		}
 	}
 
-	if err := sourceStock.DecreaseQuantity(cmd.Quantity); err != nil {
+	if err := sourceStock.DecreaseAvailableQuantity(cmd.Quantity); err != nil {
 		return err
 	}
-	if err := destStock.IncreaseQuantity(cmd.Quantity); err != nil {
+	if err := destStock.IncreaseAvailableQuantity(cmd.Quantity); err != nil {
 		return err
 	}
 

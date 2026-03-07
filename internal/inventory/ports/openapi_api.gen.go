@@ -33,6 +33,9 @@ type ServerInterface interface {
 	// (PUT /locations/{locationUUID}/products)
 	AddProductsToLocation(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID)
 
+	// (PUT /locations/{locationUUID}/products/{productUUID}/report-damage)
+	ReportDamagedProduct(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID, productUUID openapi_types.UUID)
+
 	// (GET /product/{productUUID}/locations)
 	GetProductLocations(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID)
 
@@ -83,6 +86,11 @@ func (_ Unimplemented) GetLocationContents(w http.ResponseWriter, r *http.Reques
 
 // (PUT /locations/{locationUUID}/products)
 func (_ Unimplemented) AddProductsToLocation(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID) {
+	w.WriteHeader(http.StatusNotImplemented)
+}
+
+// (PUT /locations/{locationUUID}/products/{productUUID}/report-damage)
+func (_ Unimplemented) ReportDamagedProduct(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID, productUUID openapi_types.UUID) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
@@ -244,6 +252,40 @@ func (siw *ServerInterfaceWrapper) AddProductsToLocation(w http.ResponseWriter, 
 
 	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		siw.Handler.AddProductsToLocation(w, r, locationUUID)
+	}))
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		handler = middleware(handler)
+	}
+
+	handler.ServeHTTP(w, r)
+}
+
+// ReportDamagedProduct operation middleware
+func (siw *ServerInterfaceWrapper) ReportDamagedProduct(w http.ResponseWriter, r *http.Request) {
+
+	var err error
+
+	// ------------- Path parameter "locationUUID" -------------
+	var locationUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "locationUUID", chi.URLParam(r, "locationUUID"), &locationUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "locationUUID", Err: err})
+		return
+	}
+
+	// ------------- Path parameter "productUUID" -------------
+	var productUUID openapi_types.UUID
+
+	err = runtime.BindStyledParameterWithOptions("simple", "productUUID", chi.URLParam(r, "productUUID"), &productUUID, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandlerFunc(w, r, &InvalidParamFormatError{ParamName: "productUUID", Err: err})
+		return
+	}
+
+	handler := http.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		siw.Handler.ReportDamagedProduct(w, r, locationUUID, productUUID)
 	}))
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -500,6 +542,9 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 	})
 	r.Group(func(r chi.Router) {
 		r.Put(options.BaseURL+"/locations/{locationUUID}/products", wrapper.AddProductsToLocation)
+	})
+	r.Group(func(r chi.Router) {
+		r.Put(options.BaseURL+"/locations/{locationUUID}/products/{productUUID}/report-damage", wrapper.ReportDamagedProduct)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/product/{productUUID}/locations", wrapper.GetProductLocations)

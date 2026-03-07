@@ -38,7 +38,7 @@ func NewInventory(productUUID string, locationUUID string, quantity int) (*Inven
 	}, nil
 }
 
-func (i *Inventory) DecreaseQuantity(amount int) error {
+func (i *Inventory) DecreaseAvailableQuantity(amount int) error {
 	if amount <= 0 {
 		return errors.New("must decrease by a positive amount")
 	}
@@ -49,10 +49,34 @@ func (i *Inventory) DecreaseQuantity(amount int) error {
 	return nil
 }
 
-func (i *Inventory) IncreaseQuantity(amount int) error {
+func (i *Inventory) IncreaseAvailableQuantity(amount int) error {
 	if amount <= 0 {
 		return errors.New("must increase by a positive amount")
 	}
 	i.AvailableQuantity += amount
+	return nil
+}
+
+func (i *Inventory) ReserveQuantity(amount int) error {
+	if amount <= 0 {
+		return errors.New("must reserve by a positive amount")
+	}
+	if amount > i.AvailableQuantity {
+		return errors.New("insufficient stock for transfer")
+	}
+	i.AvailableQuantity -= amount
+	i.ReservedQuantity += amount
+	return nil
+}
+
+func (i *Inventory) MarkQuantityAsDamaged(amount int) error {
+	if amount <= 0 {
+		return errors.New("must reserve by a positive amount")
+	}
+	if amount > i.AvailableQuantity {
+		return errors.New("insufficient stock for transfer")
+	}
+	i.AvailableQuantity -= amount
+	i.DamagedQuantity += amount
 	return nil
 }

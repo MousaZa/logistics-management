@@ -22,6 +22,7 @@ type Commands struct {
 	// Inventory
 	AddInventory    command.AddInventoryHandler
 	TransferProduct command.TransferProductHandler
+	ReportDamaged   command.ReportDamagedHandler
 }
 
 type Queries struct {

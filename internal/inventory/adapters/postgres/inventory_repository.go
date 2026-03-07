@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/MousaZa/logistics-management/internal/inventory/domain/inventory"
 	"github.com/MousaZa/logistics-management/internal/inventory/domain/locations"
@@ -11,6 +12,31 @@ import (
 
 type InventoryRepository struct {
 	db *pgxpool.Pool
+}
+
+func (p InventoryRepository) UpdateInventory(ctx context.Context, locationUUID string, productUUID string, updateFunc func(ctx context.Context, i *inventory.Inventory) (*inventory.Inventory, error)) error {
+	query := `SELECT product_uuid, location_uuid, qty_available, qty_damaged, qty_reserved FROM inventory WHERE product_uuid = $1 AND location_uuid = $2`
+
+	row := p.db.QueryRow(ctx, query, productUUID, locationUUID)
+
+	var i inventory.Inventory
+	err := row.Scan(&i.ProductUUID, &i.LocationUUID, &i.AvailableQuantity, &i.DamagedQuantity, &i.ReservedQuantity)
+	if err != nil {
+		return fmt.Errorf("unable to scan inventory: %w", err)
+	}
+
+	updatedInventory, err := updateFunc(ctx, &i)
+	if err != nil {
+		return fmt.Errorf("update function failed: %w", err)
+	}
+
+	updateQuery := `UPDATE inventory SET qty_available = $1, qty_reserved=$2, qty_damaged=$3 WHERE product_uuid = $4 and location_uuid = $5`
+	_, err = p.db.Exec(ctx, updateQuery, updatedInventory.AvailableQuantity, updatedInventory.ReservedQuantity, updatedInventory.DamagedQuantity, productUUID, locationUUID)
+	if err != nil {
+		return fmt.Errorf("unable to update inventory: %w", err)
+	}
+
+	return nil
 }
 
 func (p InventoryRepository) GetInventory(ctx context.Context, productUUID, locationUUID string) (*inventory.Inventory, error) {
@@ -52,7 +78,7 @@ func (p InventoryRepository) UpdateMultipleInventories(ctx context.Context, inve
 }
 
 func (p InventoryRepository) GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.ProductStock, error) {
-	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at, i.quantity
+	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at, i.qty_available
 			  FROM inventory i
 			  JOIN products p ON i.product_uuid = p.product_uuid
 			  WHERE i.location_uuid = $1`

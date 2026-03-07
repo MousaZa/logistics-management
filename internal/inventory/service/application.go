@@ -38,11 +38,8 @@ func NewApplication(ctx context.Context) app.Application {
 		panic(err)
 	}
 
-	// 2. Setup the Router
-	// The router acts as the engine that pulls messages from the subscriber
 	router, err := message.NewRouter(message.RouterConfig{}, watermillLogger)
 
-	// Add standard middleware (retries, poison queue, logging)
 	router.AddMiddleware(
 		middleware.Retry{
 			MaxRetries:      3,
@@ -54,28 +51,23 @@ func NewApplication(ctx context.Context) app.Application {
 	eventProcessor, err := cqrs.NewEventProcessorWithConfig(
 		router,
 		cqrs.EventProcessorConfig{
-			// How do we generate the topic name to listen to?
 			GenerateSubscribeTopic: func(params cqrs.EventProcessorGenerateSubscribeTopicParams) (string, error) {
-				// This must match the topic the Order service published to!
 				return "events.OrderPlacedEvent", nil
 			},
 			SubscriberConstructor: func(e cqrs.EventProcessorSubscriberConstructorParams) (message.Subscriber, error) {
 				return sub, nil
 			},
-			// How do we know which event is which?
 			Marshaler: cqrs.JSONMarshaler{GenerateName: cqrs.StructName},
 			Logger:    watermillLogger,
 		},
 	)
 
-	// 4. Register the App Handler with the Processor
 	handler := events.NewExternalOrderPlacedHandler(inventoryRepository)
 	err = eventProcessor.AddHandlers(handler)
 	if err != nil {
 		panic(err)
 	}
 
-	// 5. Start the engine (this blocks and runs forever)
 	fmt.Println("Starting Inventory Event Router...")
 	go func() {
 		err := router.Run(context.Background())

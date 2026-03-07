@@ -27,6 +27,9 @@ func NewCancelOrderHandler(eventBus *cqrs.EventBus, repo orders.Repository, logg
 
 func (h cancelOrderHandler) Handle(ctx context.Context, cmd CancelOrder) error {
 	if err := h.repo.UpdateOrder(ctx, cmd.OrderUUID, func(ctx context.Context, o *orders.Order) (*orders.Order, error) {
+		if o.Status != orders.Pending {
+			return nil, errors.NewSlugError("only pending orders can be cancelled", "invalid-order-status")
+		}
 		err := o.UpdateStatus(orders.Cancelled)
 		if err != nil {
 			return nil, err

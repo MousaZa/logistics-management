@@ -24,13 +24,17 @@ CREATE TABLE inventory (
     product_uuid UUID NOT NULL REFERENCES products(product_uuid) ON DELETE RESTRICT,
     location_uuid UUID NOT NULL REFERENCES locations(location_uuid) ON DELETE RESTRICT,
 
-    quantity INT NOT NULL DEFAULT 0,
-    status TEXT NOT NULL CHECK (status IN ('available', 'reserved', 'damaged')),
+    -- Statuses become columns
+    qty_available INT NOT NULL DEFAULT 0,
+    qty_reserved  INT NOT NULL DEFAULT 0,
+    qty_damaged   INT NOT NULL DEFAULT 0,
 
-    -- Prevent negative inventory at the database level
-    CONSTRAINT chk_quantity_non_negative CHECK (quantity >= 0),
+    -- Constraints ensure no bucket ever goes negative
+    CONSTRAINT chk_avail_non_negative CHECK (qty_available >= 0),
+    CONSTRAINT chk_rsvd_non_negative  CHECK (qty_reserved >= 0),
+    CONSTRAINT chk_dmgd_non_negative  CHECK (qty_damaged >= 0),
 
-    -- A product can only have one inventory record per location
+    -- The original primary key works perfectly here
     PRIMARY KEY (product_uuid, location_uuid)
 );
 

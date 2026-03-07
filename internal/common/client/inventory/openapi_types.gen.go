@@ -48,7 +48,7 @@ type ProductLocationInventory struct {
 	LocationUUID *string    `json:"locationUUID,omitempty"`
 	Name         string     `json:"name"`
 
-	// Quantity The quantity of the product available at this location
+	// Quantity The quantity of the products available at this locations
 	Quantity  *int       `json:"quantity,omitempty"`
 	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
 }

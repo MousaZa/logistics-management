@@ -600,7 +600,7 @@ func NewGetProductLocationsRequest(server string, productUUID openapi_types.UUID
 		return nil, err
 	}
 
-	operationPath := fmt.Sprintf("/product/%s/locations", pathParam0)
+	operationPath := fmt.Sprintf("/products/%s/locations", pathParam0)
 	if operationPath[0] == '/' {
 		operationPath = "." + operationPath
 	}

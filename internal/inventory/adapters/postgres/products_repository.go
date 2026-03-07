@@ -31,7 +31,7 @@ func (p ProductsRepository) AddProduct(ctx context.Context, product *products.Pr
 	)
 
 	if err != nil {
-		return fmt.Errorf("unable to insert product: %w", err)
+		return fmt.Errorf("unable to insert products: %w", err)
 	}
 	return nil
 }
@@ -50,7 +50,7 @@ func (p ProductsRepository) GetAllProducts(ctx context.Context) ([]*products.Pro
 		var p products.Product
 		err := rows.Scan(&p.ProductUUID, &p.Name, &p.Price, &p.Weight, &p.CreatedAt, &p.UpdatedAt)
 		if err != nil {
-			return nil, fmt.Errorf("unable to scan product: %w", err)
+			return nil, fmt.Errorf("unable to scan products: %w", err)
 		}
 		productsList = append(productsList, &p)
 	}
@@ -68,7 +68,7 @@ func (p ProductsRepository) GetProduct(ctx context.Context, productUUID string) 
 	var pr products.Product
 	err := p.db.QueryRow(ctx, query, productUUID).Scan(&pr.ProductUUID, &pr.Name, &pr.Price, &pr.Weight, &pr.CreatedAt, &pr.UpdatedAt)
 	if err != nil {
-		return nil, fmt.Errorf("unable to query product: %w", err)
+		return nil, fmt.Errorf("unable to query products: %w", err)
 	}
 
 	return &pr, nil
@@ -80,19 +80,19 @@ func (p ProductsRepository) UpdateProduct(ctx context.Context, productUUID strin
 	var pr products.Product
 	err := p.db.QueryRow(ctx, query, productUUID).Scan(&pr.ProductUUID, &pr.Name, &pr.Price, &pr.Weight, &pr.CreatedAt, &pr.UpdatedAt)
 	if err != nil {
-		return fmt.Errorf("unable to query product: %w", err)
+		return fmt.Errorf("unable to query products: %w", err)
 	}
 
 	updatedProduct, err := updateFunc(ctx, &pr)
 	if err != nil {
-		return fmt.Errorf("unable to update product: %w", err)
+		return fmt.Errorf("unable to update products: %w", err)
 	}
 
 	updateQuery := `UPDATE products SET name = $1, price = $2, weight = $3, updated_at = $4 WHERE product_uuid = $5`
 
 	_, err = p.db.Exec(ctx, updateQuery, updatedProduct.Name, updatedProduct.Price, updatedProduct.Weight, productUUID)
 	if err != nil {
-		return fmt.Errorf("unable to update product: %w", err)
+		return fmt.Errorf("unable to update products: %w", err)
 	}
 
 	return nil

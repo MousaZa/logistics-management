@@ -16,7 +16,7 @@ func (p LocationsRepository) AddLocation(ctx context.Context, location *location
 	query := `INSERT INTO locations (location_uuid, name, address, city) VALUES ($1, $2, $3, $4)`
 	_, err := p.db.Exec(ctx, query, location.LocationUUID, location.Name, location.Address, location.City)
 	if err != nil {
-		return fmt.Errorf("unable to insert location: %w", err)
+		return fmt.Errorf("unable to insert locations: %w", err)
 	}
 	return nil
 }
@@ -35,7 +35,7 @@ func (p LocationsRepository) GetAllLocations(ctx context.Context) ([]*locations.
 		var l locations.Location
 		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
 		if err != nil {
-			return nil, fmt.Errorf("unable to scan location: %w", err)
+			return nil, fmt.Errorf("unable to scan locations: %w", err)
 		}
 		locationsList = append(locationsList, &l)
 	}
@@ -55,7 +55,7 @@ func (p LocationsRepository) GetLocation(ctx context.Context, locationUUID strin
 	var l locations.Location
 	err := row.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
 	if err != nil {
-		return nil, fmt.Errorf("unable to scan location: %w", err)
+		return nil, fmt.Errorf("unable to scan locations: %w", err)
 	}
 
 	return &l, nil
@@ -69,7 +69,7 @@ func (p LocationsRepository) UpdateLocation(ctx context.Context, locationUUID st
 	var l locations.Location
 	err := row.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
 	if err != nil {
-		return fmt.Errorf("unable to scan location: %w", err)
+		return fmt.Errorf("unable to scan locations: %w", err)
 	}
 
 	updatedLocation, err := updateFunc(ctx, &l)
@@ -80,7 +80,7 @@ func (p LocationsRepository) UpdateLocation(ctx context.Context, locationUUID st
 	updateQuery := `UPDATE locations SET name = $1, address = $2, city = $3, updated_at = NOW() WHERE location_uuid = $4`
 	_, err = p.db.Exec(ctx, updateQuery, updatedLocation.Name, updatedLocation.Address, updatedLocation.City, locationUUID)
 	if err != nil {
-		return fmt.Errorf("unable to update location: %w", err)
+		return fmt.Errorf("unable to update locations: %w", err)
 	}
 
 	return nil

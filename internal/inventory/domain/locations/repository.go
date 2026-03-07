@@ -10,7 +10,7 @@ type NotFoundError struct {
 }
 
 func (e NotFoundError) Error() string {
-	return fmt.Sprintf("location '%s' not found", e.LocationUUID)
+	return fmt.Sprintf("locations '%s' not found", e.LocationUUID)
 }
 
 type Repository interface {

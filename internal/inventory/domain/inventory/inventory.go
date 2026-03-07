@@ -19,10 +19,10 @@ type Inventory struct {
 
 func NewInventory(productUUID string, locationUUID string, quantity int) (*Inventory, error) {
 	if productUUID == "" {
-		return nil, errors.New("product uuid is empty")
+		return nil, errors.New("products uuid is empty")
 	}
 	if locationUUID == "" {
-		return nil, errors.New("location uuid is empty")
+		return nil, errors.New("locations uuid is empty")
 	}
 	if quantity < 0 {
 		return nil, errors.New("quantity is negative")

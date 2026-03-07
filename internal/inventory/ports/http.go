@@ -23,11 +23,11 @@ func (h HttpServer) GetLocationByUUID(w http.ResponseWriter, r *http.Request, lo
 
 	l, err := h.app.Queries.LocationByUUID.Handle(r.Context(), query.LocationByUUID{LocationUUID: uuids})
 	if err != nil {
-		httperr.InternalError("unable-to-get-location", err, w, r)
+		httperr.InternalError("unable-to-get-locations", err, w, r)
 		return
 	}
 	if l == nil {
-		httperr.InternalError("unable-to-get-location", err, w, r)
+		httperr.InternalError("unable-to-get-locations", err, w, r)
 		return
 	}
 
@@ -56,7 +56,7 @@ func (h HttpServer) UpdateLocation(w http.ResponseWriter, r *http.Request, locat
 
 	err = h.app.Commands.UpdateLocation.Handle(r.Context(), command.UpdateLocation{LocationUUID: uuids, Name: &loc.Name, Address: &loc.Address, City: &loc.City})
 	if err != nil {
-		httperr.InternalError("unable-to-update-location", err, w, r)
+		httperr.InternalError("unable-to-update-locations", err, w, r)
 		return
 	}
 
@@ -84,7 +84,7 @@ func (h HttpServer) AddProductsToLocation(w http.ResponseWriter, r *http.Request
 	err = h.app.Commands.AddInventory.Handle(r.Context(), command.AddInventory{LocationUUID: locationUUID.String(), ProductUUID: req[0].ProductUUID.String(), Quantity: req[0].Quantity})
 	if err != nil {
 		fmt.Println(err)
-		httperr.InternalError("unable-to-add-products-to-location", err, w, r)
+		httperr.InternalError("unable-to-add-products-to-locations", err, w, r)
 		return
 	}
 
@@ -94,7 +94,7 @@ func (h HttpServer) AddProductsToLocation(w http.ResponseWriter, r *http.Request
 func (h HttpServer) GetProductLocations(w http.ResponseWriter, r *http.Request, productUUID types.UUID) {
 	locs, err := h.app.Queries.ProductLocations.Handle(r.Context(), query.ProductLocations{ProductUUID: productUUID.String()})
 	if err != nil {
-		httperr.InternalError("unable-to-get-product-locations", err, w, r)
+		httperr.InternalError("unable-to-get-products-locations", err, w, r)
 		return
 	}
 
@@ -147,7 +147,7 @@ func (h HttpServer) CreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	err = h.app.Commands.AddProduct.Handle(r.Context(), command.AddProduct{Name: prod.Name, Price: prod.Price, Weight: prod.Weight})
 	if err != nil {
-		httperr.InternalError("unable-to-create-product", err, w, r)
+		httperr.InternalError("unable-to-create-products", err, w, r)
 		return
 	}
 
@@ -157,7 +157,7 @@ func (h HttpServer) CreateProduct(w http.ResponseWriter, r *http.Request) {
 func (h HttpServer) GetProductByUUID(w http.ResponseWriter, r *http.Request, productUUID types.UUID) {
 	product, err := h.app.Queries.ProductByUUID.Handle(r.Context(), query.ProductByUUID{ProductUUID: productUUID.String()})
 	if err != nil {
-		httperr.InternalError("unable-to-get-product", err, w, r)
+		httperr.InternalError("unable-to-get-products", err, w, r)
 		return
 	}
 
@@ -185,7 +185,7 @@ func (h HttpServer) UpdateProduct(w http.ResponseWriter, r *http.Request, produc
 
 	err = h.app.Commands.UpdateProduct.Handle(r.Context(), command.UpdateProduct{ProductUUID: productUUID.String(), Name: &prod.Name, Price: &prod.Price, Weight: &prod.Weight})
 	if err != nil {
-		httperr.InternalError("unable-to-update-product", err, w, r)
+		httperr.InternalError("unable-to-update-products", err, w, r)
 		return
 	}
 
@@ -227,7 +227,7 @@ func (h HttpServer) CreateLocation(w http.ResponseWriter, r *http.Request) {
 
 	err = h.app.Commands.AddLocation.Handle(r.Context(), command.AddLocation{Name: loc.Name, Address: loc.Address, City: loc.City})
 	if err != nil {
-		httperr.InternalError("unable-to-create-location", err, w, r)
+		httperr.InternalError("unable-to-create-locations", err, w, r)
 		return
 	}
 
@@ -247,7 +247,7 @@ func (h HttpServer) TransferProducts(w http.ResponseWriter, r *http.Request) {
 	err = h.app.Commands.TransferProduct.Handle(r.Context(), command.TransferProduct{SourceLocationUUID: req.SourceLocationUUID.String(), DestinationLocationUUID: req.DestLocationUUID.String(), ProductUUID: req.ProductUUID.String(), Quantity: req.Quantity})
 	if err != nil {
 		fmt.Println(err)
-		httperr.InternalError("unable-to-transfer-product", err, w, r)
+		httperr.InternalError("unable-to-transfer-products", err, w, r)
 		return
 	}
 
@@ -257,7 +257,7 @@ func (h HttpServer) TransferProducts(w http.ResponseWriter, r *http.Request) {
 func (h HttpServer) GetLocationContents(w http.ResponseWriter, r *http.Request, locationUUID types.UUID) {
 	prods, err := h.app.Queries.LocationProducts.Handle(r.Context(), query.LocationProducts{LocationUUID: locationUUID.String()})
 	if err != nil {
-		httperr.InternalError("unable-to-get-location-contents", err, w, r)
+		httperr.InternalError("unable-to-get-locations-contents", err, w, r)
 		return
 	}
 

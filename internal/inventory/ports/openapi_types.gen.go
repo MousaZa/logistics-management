@@ -42,15 +42,21 @@ type Product struct {
 
 // ProductLocationInventory defines model for ProductLocationInventory.
 type ProductLocationInventory struct {
-	Address      string     `json:"address"`
-	City         string     `json:"city"`
-	CreatedAt    *time.Time `json:"createdAt,omitempty"`
-	LocationUUID *string    `json:"locationUUID,omitempty"`
-	Name         string     `json:"name"`
+	Address string `json:"address"`
 
-	// Quantity The quantity of the products available at this locations
-	Quantity  *int       `json:"quantity,omitempty"`
-	UpdatedAt *time.Time `json:"updatedAt,omitempty"`
+	// AvailableQuantity The quantity of the product available at this location
+	AvailableQuantity *int       `json:"availableQuantity,omitempty"`
+	City              string     `json:"city"`
+	CreatedAt         *time.Time `json:"createdAt,omitempty"`
+
+	// DamagedQuantity The quantity of the product damaged at this location
+	DamagedQuantity *int    `json:"damagedQuantity,omitempty"`
+	LocationUUID    *string `json:"locationUUID,omitempty"`
+	Name            string  `json:"name"`
+
+	// ReservedQuantity The quantity of the product reserved at this location
+	ReservedQuantity *int       `json:"reservedQuantity,omitempty"`
+	UpdatedAt        *time.Time `json:"updatedAt,omitempty"`
 }
 
 // ProductStock defines model for ProductStock.

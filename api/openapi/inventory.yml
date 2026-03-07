@@ -382,10 +382,18 @@ components:
         - $ref: '#/components/schemas/Location'
         - type: object
           properties:
-            quantity:
+            availableQuantity:
               type: integer
               description: The quantity of the product available at this location
               example: 42
+            damagedQuantity:
+              type: integer
+              description: The quantity of the product damaged at this location
+              example: 10
+            reservedQuantity:
+              type: integer
+              description: The quantity of the product reserved at this location
+              example: 15
     ProductLocationInventories:
       type: object
       required: [ items ]

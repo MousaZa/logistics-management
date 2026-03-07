@@ -101,13 +101,15 @@ func (h HttpServer) GetProductLocations(w http.ResponseWriter, r *http.Request, 
 	resp := make([]ProductLocationInventory, len(locs))
 	for i, loc := range locs {
 		resp[i] = ProductLocationInventory{
-			LocationUUID: &loc.LocationUUID,
-			Name:         loc.Name,
-			Address:      loc.Address,
-			City:         loc.City,
-			CreatedAt:    &loc.CreatedAt,
-			UpdatedAt:    &loc.UpdatedAt,
-			Quantity:     &loc.Quantity,
+			LocationUUID:      &loc.LocationUUID,
+			Name:              loc.Name,
+			Address:           loc.Address,
+			City:              loc.City,
+			CreatedAt:         &loc.CreatedAt,
+			UpdatedAt:         &loc.UpdatedAt,
+			AvailableQuantity: &loc.AvailableQuantity,
+			ReservedQuantity:  &loc.ReservedQuantity,
+			DamagedQuantity:   &loc.DamagedQuantity,
 		}
 	}
 

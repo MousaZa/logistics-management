@@ -33,7 +33,7 @@ type ServerInterface interface {
 	// (PUT /locations/{locationUUID}/products)
 	AddProductsToLocation(w http.ResponseWriter, r *http.Request, locationUUID openapi_types.UUID)
 
-	// (GET /products/{productUUID}/locations)
+	// (GET /product/{productUUID}/locations)
 	GetProductLocations(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID)
 
 	// (GET /products)
@@ -86,7 +86,7 @@ func (_ Unimplemented) AddProductsToLocation(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusNotImplemented)
 }
 
-// (GET /products/{productUUID}/locations)
+// (GET /product/{productUUID}/locations)
 func (_ Unimplemented) GetProductLocations(w http.ResponseWriter, r *http.Request, productUUID openapi_types.UUID) {
 	w.WriteHeader(http.StatusNotImplemented)
 }
@@ -502,7 +502,7 @@ func HandlerWithOptions(si ServerInterface, options ChiServerOptions) http.Handl
 		r.Put(options.BaseURL+"/locations/{locationUUID}/products", wrapper.AddProductsToLocation)
 	})
 	r.Group(func(r chi.Router) {
-		r.Get(options.BaseURL+"/products/{productUUID}/locations", wrapper.GetProductLocations)
+		r.Get(options.BaseURL+"/product/{productUUID}/locations", wrapper.GetProductLocations)
 	})
 	r.Group(func(r chi.Router) {
 		r.Get(options.BaseURL+"/products", wrapper.GetProducts)

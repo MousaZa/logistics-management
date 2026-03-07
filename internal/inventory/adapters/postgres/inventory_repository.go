@@ -14,12 +14,12 @@ type InventoryRepository struct {
 }
 
 func (p InventoryRepository) GetInventory(ctx context.Context, productUUID, locationUUID string) (*inventory.Inventory, error) {
-	query := `SELECT product_uuid, location_uuid, quantity FROM inventory WHERE product_uuid = $1 AND location_uuid = $2`
+	query := `SELECT product_uuid, location_uuid, qty_available, qty_damaged, qty_reserved FROM inventory WHERE product_uuid = $1 AND location_uuid = $2`
 
 	row := p.db.QueryRow(ctx, query, productUUID, locationUUID)
 
 	var inv inventory.Inventory
-	err := row.Scan(&inv.ProductUUID, &inv.LocationUUID, &inv.Quantity)
+	err := row.Scan(&inv.ProductUUID, &inv.LocationUUID, &inv.AvailableQuantity, &inv.DamagedQuantity, &inv.ReservedQuantity)
 	if err != nil {
 		return nil, err
 	}
@@ -35,14 +35,14 @@ func (p InventoryRepository) UpdateMultipleInventories(ctx context.Context, inve
 	defer tx.Rollback(ctx) // Safe to call even if committed
 
 	query := `
-        INSERT INTO inventory (product_uuid, location_uuid, quantity) 
+        INSERT INTO inventory (product_uuid, location_uuid, qty_available) 
         VALUES ($1, $2, $3)
         ON CONFLICT (product_uuid, location_uuid) 
         DO UPDATE SET quantity = EXCLUDED.quantity;
     `
 
 	for _, item := range inventories {
-		_, err := tx.Exec(ctx, query, item.ProductUUID, item.LocationUUID, item.Quantity)
+		_, err := tx.Exec(ctx, query, item.ProductUUID, item.LocationUUID, item.AvailableQuantity)
 		if err != nil {
 			return err // This triggers the rollback
 		}
@@ -81,7 +81,7 @@ func (p InventoryRepository) GetLocationProducts(ctx context.Context, locationUU
 }
 
 func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUID string) ([]*locations.ProductLocationInventory, error) {
-	query := `SELECT l.location_uuid, l.name, l.address, l.city, l.created_at, l.updated_at, i.quantity
+	query := `SELECT l.location_uuid, l.name, l.address, l.city, l.created_at, l.updated_at, i.qty_available, i.qty_damaged, i.qty_reserved
 			  FROM inventory i
 			  JOIN locations l ON i.location_uuid = l.location_uuid
 			  WHERE i.product_uuid = $1`
@@ -95,7 +95,7 @@ func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUI
 	var locationsList []*locations.ProductLocationInventory
 	for rows.Next() {
 		var l locations.ProductLocationInventory
-		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt, &l.Quantity)
+		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt, &l.AvailableQuantity, &l.DamagedQuantity, &l.ReservedQuantity)
 		if err != nil {
 			return nil, err
 		}
@@ -110,13 +110,14 @@ func (p InventoryRepository) GetProductLocations(ctx context.Context, productUUI
 }
 
 func (p InventoryRepository) AddInventory(ctx context.Context, inventory *inventory.Inventory) error {
-	query := `INSERT INTO inventory (location_uuid, product_uuid, quantity, status) VALUES ($1, $2, $3, $4)`
+	query := `INSERT INTO inventory (location_uuid, product_uuid, qty_available, qty_damaged, qty_reserved) VALUES ($1, $2, $3, $4, $5)`
 
 	_, err := p.db.Exec(ctx, query,
 		inventory.LocationUUID,
 		inventory.ProductUUID,
-		inventory.Quantity,
-		inventory.Status,
+		inventory.AvailableQuantity,
+		inventory.DamagedQuantity,
+		inventory.ReservedQuantity,
 	)
 
 	if err != nil {

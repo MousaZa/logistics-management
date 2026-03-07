@@ -4,17 +4,18 @@ import "errors"
 
 type Status string
 
-const (
-	StatusAvailable Status = "available"
-	StatusReserved  Status = "reserved"
-	StatusDamaged   Status = "damaged"
-)
+//const (
+//	StatusAvailable Status = "available"
+//	StatusReserved  Status = "reserved"
+//	StatusDamaged   Status = "damaged"
+//)
 
 type Inventory struct {
-	ProductUUID  string
-	LocationUUID string
-	Quantity     int
-	Status       Status
+	ProductUUID       string
+	LocationUUID      string
+	AvailableQuantity int
+	ReservedQuantity  int
+	DamagedQuantity   int
 }
 
 func NewInventory(productUUID string, locationUUID string, quantity int) (*Inventory, error) {
@@ -29,10 +30,11 @@ func NewInventory(productUUID string, locationUUID string, quantity int) (*Inven
 	}
 
 	return &Inventory{
-		ProductUUID:  productUUID,
-		LocationUUID: locationUUID,
-		Quantity:     quantity,
-		Status:       StatusAvailable,
+		ProductUUID:       productUUID,
+		LocationUUID:      locationUUID,
+		AvailableQuantity: quantity,
+		ReservedQuantity:  0,
+		DamagedQuantity:   0,
 	}, nil
 }
 
@@ -40,10 +42,10 @@ func (i *Inventory) DecreaseQuantity(amount int) error {
 	if amount <= 0 {
 		return errors.New("must decrease by a positive amount")
 	}
-	if i.Quantity < amount {
+	if i.AvailableQuantity < amount {
 		return errors.New("insufficient stock for transfer")
 	}
-	i.Quantity -= amount
+	i.AvailableQuantity -= amount
 	return nil
 }
 
@@ -51,6 +53,6 @@ func (i *Inventory) IncreaseQuantity(amount int) error {
 	if amount <= 0 {
 		return errors.New("must increase by a positive amount")
 	}
-	i.Quantity += amount
+	i.AvailableQuantity += amount
 	return nil
 }

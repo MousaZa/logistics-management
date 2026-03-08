@@ -14,6 +14,29 @@ type InventoryRepository struct {
 	db *pgxpool.Pool
 }
 
+func (p InventoryRepository) GetInventoriesByProduct(ctx context.Context, productUUID string) ([]*inventory.Inventory, error) {
+	query := `SELECT product_uuid, location_uuid, qty_available, qty_damaged, qty_reserved FROM inventory WHERE product_uuid = $1`
+
+	rows, err := p.db.Query(ctx, query, productUUID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var inventoriesList []*inventory.Inventory
+	for rows.Next() {
+		var i inventory.Inventory
+		err := rows.Scan(&i.ProductUUID, &i.LocationUUID, &i.AvailableQuantity, &i.DamagedQuantity, &i.ReservedQuantity)
+		if err != nil {
+			return nil, err
+		}
+		inventoriesList = append(inventoriesList, &i)
+	}
+ 
+	return inventoriesList, nil
+
+}
+
 func (p InventoryRepository) UpdateInventory(ctx context.Context, locationUUID string, productUUID string, updateFunc func(ctx context.Context, i *inventory.Inventory) (*inventory.Inventory, error)) error {
 	query := `SELECT product_uuid, location_uuid, qty_available, qty_damaged, qty_reserved FROM inventory WHERE product_uuid = $1 AND location_uuid = $2`
 

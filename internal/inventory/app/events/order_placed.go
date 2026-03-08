@@ -2,6 +2,7 @@ package events
 
 import (
 	"context"
+	"errors"
 
 	"github.com/MousaZa/logistics-management/internal/inventory/domain/inventory"
 )
@@ -34,6 +35,35 @@ func (h ExternalOrderPlacedHandler) NewEvent() interface{} {
 
 func (h ExternalOrderPlacedHandler) Handle(ctx context.Context, event any) error {
 	e := event.(*OrderPlacedEvent)
-	println("HEEEEEE", (*e).LineItems[0].ProductUUID)
-	return nil
+
+	count := 0
+	for _, li := range e.LineItems {
+		inv, err := h.repo.GetInventoriesByProduct(ctx, li.ProductUUID)
+		if err != nil {
+			return err
+		}
+
+		for _, i := range inv { // TODO improve the mechanism
+			err := i.ReserveQuantity(li.Quantity)
+			if err == nil {
+				err = h.repo.UpdateInventory(ctx, i.LocationUUID, i.ProductUUID, func(ctx context.Context, i *inventory.Inventory) (*inventory.Inventory, error) {
+					err = i.ReserveQuantity(li.Quantity)
+					if err != nil {
+						return nil, err
+					}
+					return i, nil
+				})
+				if err != nil {
+					return err
+				}
+				count++
+				break
+			}
+		}
+	}
+	if count == len(e.LineItems) { // TODO inform the orders service
+		return nil
+	} else {
+		return errors.New("failed to reserve inventory")
+	}
 }

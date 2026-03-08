@@ -80,3 +80,7 @@ func (i *Inventory) MarkQuantityAsDamaged(amount int) error {
 	i.DamagedQuantity += amount
 	return nil
 }
+
+//func (i *Inventory) FindLocationToReserve(uuid string, quantity int) (int, error) {
+//
+//}

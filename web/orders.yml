@@ -1,0 +1,192 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Logistics Management orders
+  description: TODO
+  contact:
+    name: Mousa Zeydan
+    email: mous.zeydan@gmail.com
+servers:
+  - url: https://{hostname}/api
+    variables:
+      hostname:
+        default: localhost
+#security:
+#  - bearerAuth: []
+paths:
+  /orders:
+    get:
+      operationId: getOrders
+      parameters:
+        - in: query
+          name: dateFrom
+          schema:
+            type: string
+            format: date-time
+          required: false
+        - in: query
+          name: dateTo
+          schema:
+            type: string
+            format: date-time
+          required: false
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orders'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      operationId: createOrder
+      requestBody:
+        description: todo
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '204':
+          description: todo
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /orders/{orderUUID}:
+    get:
+      operationId: getOrderById
+      parameters:
+        - in: path
+          name: orderUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+      responses:
+        '200':
+          description: todo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /orders/{orderUUID}/cancel:
+    post:
+      operationId: cancelOrder
+      parameters:
+        - in: path
+          name: orderUUID
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: todo
+      responses:
+        '204':
+          description: todo
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+#  securitySchemes:
+#    bearerAuth:
+#      type: http
+#      scheme: bearer
+#      bearerFormat: JWT
+  schemas:
+    LineItem:
+      type: object
+      required: [productName, quantity, unitPrice, lineTotal, unitWeight, lineWeight]
+      properties:
+        productUUID:
+          type: string
+        productName:
+          type: string
+        quantity:
+          type: integer
+        unitPrice:
+          type: number
+        lineTotal:
+          type: number
+        unitWeight:
+          type: number
+        lineWeight:
+          type: number
+
+    Order:
+      type: object
+      required: [placedBy, lineItems, orderTotal, weight, status, destination]
+      properties:
+        orderUUID:
+          type: string
+        placedBy:
+          type: string
+        lineItems:
+          type: array
+          items:
+            $ref:  '#/components/schemas/LineItem'
+        orderTotal:
+          type: number
+        weight:
+          type: number
+        status:
+          type: string
+          enum: [ pending, confirmed, shipped, delivered, completed, cancelled ]
+        destination:
+          type: string
+        orderedDate:
+          type: string
+          format: date-time
+        shippedDate:
+          type: string
+          format: date-time
+          nullable: true
+        deliveredDate:
+          type: string
+          format: date-time
+          nullable: true
+        completedDate:
+          type: string
+          format: date-time
+          nullable: true
+
+    Orders:
+      type: object
+      required: [ orders ]
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+
+    Error:
+      type: object
+      required:
+        - slug
+        - message
+      properties:
+        slug:
+          type: string
+        message:
+          type: string

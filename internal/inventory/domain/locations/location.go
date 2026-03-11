@@ -13,12 +13,12 @@ type Location struct {
 	CreatedAt    time.Time
 	LocationUUID string
 	Name         string
-	Longitude    float64
-	Latitude     float64
+	Longitude    float32
+	Latitude     float32
 	UpdatedAt    time.Time
 }
 
-func NewLocation(name string, address string, city string, longitude float64, latitude float64) (*Location, error) {
+func NewLocation(name string, address string, city string, longitude float32, latitude float32) (*Location, error) {
 	if name == "" {
 		return nil, errors.New("empty name")
 	}

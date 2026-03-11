@@ -12,8 +12,8 @@ type AddLocation struct {
 	Name    string
 	Address string
 	City    string
-	Lat     float64
-	Lon     float64
+	Lat     float32
+	Lon     float32
 }
 
 type AddLocationHandler decorator.CommandHandler[AddLocation]

@@ -13,8 +13,8 @@ type LocationsRepository struct {
 }
 
 func (p LocationsRepository) AddLocation(ctx context.Context, location *locations.Location) error {
-	query := `INSERT INTO locations (location_uuid, name, address, city) VALUES ($1, $2, $3, $4)`
-	_, err := p.db.Exec(ctx, query, location.LocationUUID, location.Name, location.Address, location.City)
+	query := `INSERT INTO locations (location_uuid, name, address, city, coordinates) VALUES ($1, $2, $3, $4, ST_SetSRID(ST_MakePoint($5, $6), 4326)::geography)`
+	_, err := p.db.Exec(ctx, query, location.LocationUUID, location.Name, location.Address, location.City, location.Longitude, location.Latitude)
 	if err != nil {
 		return fmt.Errorf("unable to insert locations: %w", err)
 	}

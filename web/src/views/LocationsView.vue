@@ -32,7 +32,9 @@ const inventoryData = ref<ProductStock[]>([])
 const inventoryLoading = ref(false)
 const inventoryColumns = [
   { key: 'name', label: 'Product Name' },
-  { key: 'quantity', label: 'Quantity' },
+  { key: 'availableQuantity', label: 'Available' },
+  { key: 'reservedQuantity', label: 'Reserved' },
+  { key: 'damagedQuantity', label: 'Damaged' },
   { key: 'weight', label: 'Unit Wt (kg)' }
 ]
 
@@ -68,9 +70,17 @@ const initMap = () => {
 
   map = L.map(mapContainer.value).setView(defaultCenter, 4)
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 20
   }).addTo(map)
+
+  map.on('click', (e: L.LeafletMouseEvent) => {
+    newLocation.value.latitude = parseFloat(e.latlng.lat.toFixed(6))
+    newLocation.value.longitude = parseFloat(e.latlng.lng.toFixed(6))
+    showModal.value = true
+  })
 
   updateMarkers()
 }
@@ -142,7 +152,7 @@ onMounted(() => {
 })
 
 const submitLocation = async () => {
-  if (!newLocation.value.name || !newLocation.value.city) return
+  if (!newLocation.value.name || !newLocation.value.city || !newLocation.value.address) return
   
   try {
     await createLocation(newLocation.value)
@@ -237,6 +247,11 @@ const openInventoryModal = async (uuid?: string) => {
         <div class="form-group">
           <label>City</label>
           <input v-model="newLocation.city" type="text" class="form-input" placeholder="e.g. New York" />
+        </div>
+
+        <div class="form-group">
+          <label>Address</label>
+          <input v-model="newLocation.address" type="text" class="form-input" placeholder="e.g. 123 Main St" />
         </div>
         
         <div class="form-group grid-2">

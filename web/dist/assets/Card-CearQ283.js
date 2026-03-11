@@ -1,0 +1,1 @@
+import{d as s,c as a,l as o,e as t,_ as r}from"./index-ANyOLc_6.js";const c={class:"card glass-panel"},n=s({__name:"Card",setup(_){return(e,d)=>(t(),a("div",c,[o(e.$slots,"default",{},void 0)]))}}),p=r(n,[["__scopeId","data-v-b08a0b46"]]);export{p as C};

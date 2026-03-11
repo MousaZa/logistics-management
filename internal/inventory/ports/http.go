@@ -250,7 +250,7 @@ func (h HttpServer) CreateLocation(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.app.Commands.AddLocation.Handle(r.Context(), command.AddLocation{Name: loc.Name, Address: loc.Address, City: loc.City})
+	err = h.app.Commands.AddLocation.Handle(r.Context(), command.AddLocation{Name: loc.Name, Address: loc.Address, City: loc.City, Lat: loc.Latitude, Lon: loc.Longitude})
 	if err != nil {
 		httperr.InternalError("unable-to-create-locations", err, w, r)
 		return

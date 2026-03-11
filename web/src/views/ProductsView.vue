@@ -4,20 +4,22 @@ import Card from '../components/common/Card.vue'
 import Button from '../components/common/Button.vue'
 import DataTable from '../components/common/DataTable.vue'
 import { getProducts, createProduct, getProductLocations } from '../services/inventory'
-import type { Product, Location } from '../services/types'
+import type { Product, ProductLocationInventory } from '../services/types'
 
 const products = ref<Product[]>([])
 const loading = ref(true)
 const showModal = ref(false)
 const showLocationsModal = ref(false)
 
-const locationsData = ref<Location[]>([])
+const locationsData = ref<ProductLocationInventory[]>([])
 const locationsLoading = ref(false)
 const locationsColumns = [
   { key: 'name', label: 'Location Name' },
   { key: 'city', label: 'City' },
   { key: 'address', label: 'Address' },
-  { key: 'quantity', label: 'Quantity' }
+  { key: 'availableQuantity', label: 'Available' },
+  { key: 'reservedQuantity', label: 'Reserved' },
+  { key: 'damagedQuantity', label: 'Damaged' }
 ]
 
 const newProduct = ref<Product>({

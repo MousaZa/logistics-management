@@ -19,7 +19,9 @@ export interface Product {
 export interface ProductStock {
     productUUID?: string;
     name: string;
-    quantity: number;
+    availableQuantity: number;
+    reservedQuantity: number;
+    damagedQuantity: number;
     weight: number;
     price: number;
     createdAt?: string;
@@ -33,9 +35,14 @@ export interface Location {
     address: string;
     longitude: number;
     latitude: number;
-    quantity?: number;
     createdAt?: string;
     updatedAt?: string;
+}
+
+export interface ProductLocationInventory extends Location {
+    availableQuantity: number;
+    reservedQuantity: number;
+    damagedQuantity: number;
 }
 
 export interface TransferProductRequest {

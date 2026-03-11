@@ -1,6 +1,7 @@
 import { fetchApi } from './api';
 import type {
     Location,
+    ProductLocationInventory,
     Product,
     ProductStock,
     TransferProductRequest,
@@ -62,7 +63,7 @@ export const updateProduct = (uuid: string, product: Product) =>
     });
 
 export const getProductLocations = async (uuid: string) => {
-    const locations = await fetchApi<Location[]>('inventory', `/product/${uuid}/locations`);
+    const locations = await fetchApi<ProductLocationInventory[]>('inventory', `/product/${uuid}/locations`);
     return { locations: locations || [] };
 };
 

@@ -22,7 +22,8 @@ func (p LocationsRepository) AddLocation(ctx context.Context, location *location
 }
 
 func (p LocationsRepository) GetAllLocations(ctx context.Context) ([]*locations.Location, error) {
-	query := `SELECT location_uuid, name, address, city, created_at, updated_at FROM locations`
+	query := `SELECT location_uuid, name, address, city,ST_Y(coordinates::geometry) AS longitude, 
+    ST_X(coordinates::geometry) AS latitude, created_at, updated_at FROM locations`
 
 	rows, err := p.db.Query(ctx, query)
 	if err != nil {
@@ -33,7 +34,7 @@ func (p LocationsRepository) GetAllLocations(ctx context.Context) ([]*locations.
 	var locationsList []*locations.Location
 	for rows.Next() {
 		var l locations.Location
-		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
+		err := rows.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.Longitude, &l.Latitude, &l.CreatedAt, &l.UpdatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("unable to scan locations: %w", err)
 		}

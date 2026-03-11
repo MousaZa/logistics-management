@@ -5,11 +5,13 @@ import (
 )
 
 type ProductStock struct {
-	CreatedAt   time.Time
-	ProductUUID string
-	Name        string
-	Price       float32
-	UpdatedAt   time.Time
-	Weight      float32
-	Quantity    int
+	CreatedAt         time.Time
+	ProductUUID       string
+	Name              string
+	Price             float32
+	UpdatedAt         time.Time
+	Weight            float32
+	AvailableQuantity int
+	ReservedQuantity  int
+	DamagedQuantity   int
 }

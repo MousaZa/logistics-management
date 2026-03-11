@@ -232,6 +232,8 @@ func (h HttpServer) GetLocations(w http.ResponseWriter, r *http.Request) {
 			Name:         loc.Name,
 			Address:      loc.Address,
 			City:         loc.City,
+			Latitude:     float32(loc.Latitude),
+			Longitude:    float32(loc.Longitude),
 			CreatedAt:    &loc.CreatedAt,
 			UpdatedAt:    &loc.UpdatedAt,
 		}
@@ -287,13 +289,15 @@ func (h HttpServer) GetLocationContents(w http.ResponseWriter, r *http.Request, 
 	resp := make([]ProductStock, len(prods))
 	for i, p := range prods {
 		resp[i] = ProductStock{
-			ProductUUID: &p.ProductUUID,
-			Name:        p.Name,
-			Price:       p.Price,
-			Weight:      p.Weight,
-			CreatedAt:   &p.CreatedAt,
-			UpdatedAt:   &p.UpdatedAt,
-			Quantity:    p.Quantity,
+			ProductUUID:       &p.ProductUUID,
+			Name:              p.Name,
+			Price:             p.Price,
+			Weight:            p.Weight,
+			CreatedAt:         &p.CreatedAt,
+			UpdatedAt:         &p.UpdatedAt,
+			AvailableQuantity: p.AvailableQuantity,
+			DamagedQuantity:   p.DamagedQuantity,
+			ReservedQuantity:  p.ReservedQuantity,
 		}
 	}
 

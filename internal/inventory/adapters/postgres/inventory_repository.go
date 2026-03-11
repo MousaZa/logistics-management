@@ -32,7 +32,7 @@ func (p InventoryRepository) GetInventoriesByProduct(ctx context.Context, produc
 		}
 		inventoriesList = append(inventoriesList, &i)
 	}
- 
+
 	return inventoriesList, nil
 
 }
@@ -101,7 +101,7 @@ func (p InventoryRepository) UpdateMultipleInventories(ctx context.Context, inve
 }
 
 func (p InventoryRepository) GetLocationProducts(ctx context.Context, locationUUID string) ([]*products.ProductStock, error) {
-	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at, i.qty_available
+	query := `SELECT p.product_uuid, p.name, p.price, p.weight, p.created_at, p.updated_at, i.qty_available, i.qty_damaged, i.qty_reserved
 			  FROM inventory i
 			  JOIN products p ON i.product_uuid = p.product_uuid
 			  WHERE i.location_uuid = $1`
@@ -115,7 +115,7 @@ func (p InventoryRepository) GetLocationProducts(ctx context.Context, locationUU
 	var productsList []*products.ProductStock
 	for rows.Next() {
 		var p products.ProductStock
-		err := rows.Scan(&p.ProductUUID, &p.Name, &p.Price, &p.Weight, &p.CreatedAt, &p.UpdatedAt, &p.Quantity)
+		err := rows.Scan(&p.ProductUUID, &p.Name, &p.Price, &p.Weight, &p.CreatedAt, &p.UpdatedAt, &p.AvailableQuantity, &p.DamagedQuantity, &p.ReservedQuantity)
 		if err != nil {
 			return nil, err
 		}

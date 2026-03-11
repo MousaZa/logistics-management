@@ -13,10 +13,12 @@ type Location struct {
 	CreatedAt    time.Time
 	LocationUUID string
 	Name         string
+	Longitude    float64
+	Latitude     float64
 	UpdatedAt    time.Time
 }
 
-func NewLocation(name string, address string, city string) (*Location, error) {
+func NewLocation(name string, address string, city string, longitude float64, latitude float64) (*Location, error) {
 	if name == "" {
 		return nil, errors.New("empty name")
 	}
@@ -25,6 +27,12 @@ func NewLocation(name string, address string, city string) (*Location, error) {
 	}
 	if city == "" {
 		return nil, errors.New("empty city")
+	}
+	if longitude == 0 {
+		return nil, errors.New("empty longitude")
+	}
+	if latitude == 0 {
+		return nil, errors.New("empty latitude")
 	}
 
 	locationUUID, err := uuid.NewRandom()
@@ -39,5 +47,7 @@ func NewLocation(name string, address string, city string) (*Location, error) {
 		City:         city,
 		CreatedAt:    time.Now(),
 		UpdatedAt:    time.Now(),
+		Longitude:    longitude,
+		Latitude:     latitude,
 	}, nil
 }

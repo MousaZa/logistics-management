@@ -31,6 +31,8 @@ export interface Location {
     name: string;
     city: string;
     address: string;
+    longitude: number;
+    latitude: number;
     quantity?: number;
     createdAt?: string;
     updatedAt?: string;

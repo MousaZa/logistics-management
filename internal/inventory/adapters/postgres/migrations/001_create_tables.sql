@@ -15,6 +15,9 @@ CREATE TABLE locations (
     name TEXT NOT NULL,
     city TEXT NOT NULL,
     address TEXT NOT NULL,
+
+    coordinates GEOGRAPHY(Point, 4326) NOT NULL,
+
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -38,9 +41,11 @@ CREATE TABLE inventory (
     PRIMARY KEY (product_uuid, location_uuid)
 );
 
+CREATE INDEX idx_locations_coordinates ON locations USING GIST (coordinates);
 
 ---- create above / drop below ----
 
 DROP TABLE inventory;
 DROP TABLE locations;
 DROP TABLE products;
+DROP EXTENSION IF EXISTS postgis;

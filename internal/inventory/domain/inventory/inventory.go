@@ -18,6 +18,8 @@ type Inventory struct {
 	DamagedQuantity   int
 }
 
+type Inventories []*Inventory
+
 func NewInventory(productUUID string, locationUUID string, quantity int) (*Inventory, error) {
 	if productUUID == "" {
 		return nil, errors.New("products uuid is empty")
@@ -81,6 +83,12 @@ func (i *Inventory) MarkQuantityAsDamaged(amount int) error {
 	return nil
 }
 
-//func (i *Inventory) FindLocationToReserve(uuid string, quantity int) (int, error) {
-//
-//}
+func (ivs Inventories) GetBestLocation(quantity int) (string, error) {
+	for _, i := range ivs {
+		err := i.ReserveQuantity(quantity)
+		if err == nil {
+			return i.LocationUUID, nil
+		}
+	}
+	return "", errors.New("no location found")
+}

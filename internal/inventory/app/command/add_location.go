@@ -12,6 +12,8 @@ type AddLocation struct {
 	Name    string
 	Address string
 	City    string
+	Lat     float64
+	Lon     float64
 }
 
 type AddLocationHandler decorator.CommandHandler[AddLocation]
@@ -25,7 +27,7 @@ func NewAddLocationHandler(repo locations.Repository, logger *logrus.Entry) AddL
 }
 
 func (h addLocationHandler) Handle(ctx context.Context, cmd AddLocation) error {
-	location, err := locations.NewLocation(cmd.Name, cmd.Address, cmd.City)
+	location, err := locations.NewLocation(cmd.Name, cmd.Address, cmd.City, cmd.Lat, cmd.Lon)
 	if err != nil {
 		return err
 	}

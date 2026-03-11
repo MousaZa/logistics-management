@@ -1,10 +1,20 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import Card from '../components/common/Card.vue'
 import Button from '../components/common/Button.vue'
 import DataTable from '../components/common/DataTable.vue'
 import { getLocations, createLocation, getProducts, addProductsToLocation, getLocationContents } from '../services/inventory'
 import type { Location, Product, ProductStock } from '../services/types'
+
+// Fix Leaflet's default icon path issues with modern bundlers
+delete (L.Icon.Default.prototype as any)._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: new URL('leaflet/dist/images/marker-icon-2x.png', import.meta.url).href,
+  iconUrl: new URL('leaflet/dist/images/marker-icon.png', import.meta.url).href,
+  shadowUrl: new URL('leaflet/dist/images/marker-shadow.png', import.meta.url).href
+})
 
 const locations = ref<Location[]>([])
 const products = ref<Product[]>([])
@@ -29,15 +39,68 @@ const inventoryColumns = [
 const newLocation = ref<Location>({
   name: '',
   city: '',
-  address: ''
+  address: '',
+  longitude: 0,
+  latitude: 0
 })
+
+const mapContainer = ref<HTMLElement | null>(null)
+let map: L.Map | null = null
+let mapMarkers: L.Marker[] = []
 
 const columns = [
   { key: 'name', label: 'Name' },
   { key: 'city', label: 'City' },
   { key: 'address', label: 'Address' },
+  { key: 'latitude', label: 'Latitude' },
+  { key: 'longitude', label: 'Longitude' },
   { key: 'actions', label: 'Actions', align: 'right' as const }
 ]
+
+const initMap = () => {
+  if (!mapContainer.value) return
+  if (map) return // Already initialized
+
+  const firstValidLoc = locations.value.find(loc => loc.latitude !== undefined && loc.longitude !== undefined)
+  const defaultCenter: L.LatLngTuple = firstValidLoc && firstValidLoc.latitude !== undefined && firstValidLoc.longitude !== undefined
+    ? [firstValidLoc.latitude, firstValidLoc.longitude]
+    : [40.7128, -74.0060] // NYC approx
+
+  map = L.map(mapContainer.value).setView(defaultCenter, 4)
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map)
+
+  updateMarkers()
+}
+
+const updateMarkers = () => {
+  if (!map) return
+
+  // Clear existing markers
+  mapMarkers.forEach(marker => map?.removeLayer(marker))
+  mapMarkers = []
+
+  // Add new markers
+  const bounds = L.latLngBounds([])
+  let hasValidCoordinates = false
+
+  locations.value.forEach(loc => {
+    if (loc.latitude !== undefined && loc.longitude !== undefined) {
+      const marker = L.marker([loc.latitude, loc.longitude]).addTo(map!)
+      marker.bindPopup(`<strong>${loc.name}</strong><br>${loc.city}<br>${loc.address}`)
+      mapMarkers.push(marker)
+      bounds.extend([loc.latitude, loc.longitude])
+      hasValidCoordinates = true
+    }
+  })
+
+  // Fit bounds to show all markers if any exist
+  if (hasValidCoordinates) {
+    map.fitBounds(bounds, { padding: [50, 50], maxZoom: 10 })
+  }
+}
 
 const loadData = async () => {
   loading.value = true
@@ -48,11 +111,30 @@ const loadData = async () => {
     ])
     locations.value = locRes.locations || []
     products.value = prodRes.items || []
+    
+    // Update map when data loads
+    nextTick(() => {
+        if (map) {
+            updateMarkers();
+        } else {
+             initMap()
+        }
+    })
   } catch (err) {
     console.error('Failed to load data', err)
   } finally {
     loading.value = false
   }
+}
+
+const viewOnMap = (loc: Location) => {
+    if (!map || loc.latitude === undefined || loc.longitude === undefined) return
+    map.setView([loc.latitude, loc.longitude], 12)
+    // Find and open the popup for this marker
+    const marker = mapMarkers.find(m => m.getLatLng().lat === loc.latitude && m.getLatLng().lng === loc.longitude)
+    if (marker) {
+        marker.openPopup()
+    }
 }
 
 onMounted(() => {
@@ -65,7 +147,7 @@ const submitLocation = async () => {
   try {
     await createLocation(newLocation.value)
     showModal.value = false
-    newLocation.value = { name: '', city: '', address: '' }
+    newLocation.value = { name: '', city: '', address: '', longitude: 0, latitude: 0 }
     loadData()
   } catch (err) {
     console.error('Failed to create location', err)
@@ -128,11 +210,19 @@ const openInventoryModal = async (uuid?: string) => {
     >
       <template #cell-actions="{ row }">
         <div class="flex gap-2 justify-end">
+          <Button variant="ghost" size="sm" @click="viewOnMap(row)">View on Map</Button>
           <Button variant="ghost" size="sm" @click="openAddProductModal(row.locationUUID)">Add Product</Button>
           <Button variant="ghost" size="sm" @click="openInventoryModal(row.locationUUID)">View Inventory</Button>
         </div>
       </template>
     </DataTable>
+
+    <div class="map-container-wrapper mt-6">
+        <h3 class="mb-4">Geographic Overview</h3>
+        <Card>
+            <div ref="mapContainer" class="map-view"></div>
+        </Card>
+    </div>
 
     <!-- Simple Modal Overlay -->
     <div v-if="showModal" class="modal-overlay">
@@ -149,9 +239,15 @@ const openInventoryModal = async (uuid?: string) => {
           <input v-model="newLocation.city" type="text" class="form-input" placeholder="e.g. New York" />
         </div>
         
-        <div class="form-group">
-          <label>Address</label>
-          <input v-model="newLocation.address" type="text" class="form-input" placeholder="Full street address" />
+        <div class="form-group grid-2">
+            <div>
+              <label>Latitude</label>
+              <input v-model.number="newLocation.latitude" type="number" step="any" class="form-input" placeholder="e.g. 40.7128" />
+            </div>
+            <div>
+              <label>Longitude</label>
+              <input v-model.number="newLocation.longitude" type="number" step="any" class="form-input" placeholder="e.g. -74.0060" />
+            </div>
         </div>
 
         <div class="modal-actions flex justify-between gap-4 mt-6">
@@ -265,5 +361,39 @@ const openInventoryModal = async (uuid?: string) => {
 
 .modal-actions {
   justify-content: flex-end;
+}
+
+.map-view {
+  height: 400px;
+  width: 100%;
+  border-radius: var(--radius-md);
+  z-index: 10; /* Lower z-index than modal overlays */
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-4);
+}
+
+/* Ensure Leaflet popups display nicely over our dark theme */
+:deep(.leaflet-popup-content-wrapper) {
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+:deep(.leaflet-popup-tip) {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+}
+
+:deep(.leaflet-popup-close-button) {
+  color: var(--color-text-secondary) !important;
+}
+
+:deep(.leaflet-container a) {
+    color: var(--color-brand-primary);
 }
 </style>

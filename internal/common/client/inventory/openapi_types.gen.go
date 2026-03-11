@@ -20,7 +20,9 @@ type Location struct {
 	Address      string     `json:"address"`
 	City         string     `json:"city"`
 	CreatedAt    *time.Time `json:"createdAt,omitempty"`
+	Latitude     float32    `json:"latitude"`
 	LocationUUID *string    `json:"locationUUID,omitempty"`
+	Longitude    float32    `json:"longitude"`
 	Name         string     `json:"name"`
 	UpdatedAt    *time.Time `json:"updatedAt,omitempty"`
 }
@@ -51,7 +53,9 @@ type ProductLocationInventory struct {
 
 	// DamagedQuantity The quantity of the product damaged at this location
 	DamagedQuantity *int    `json:"damagedQuantity,omitempty"`
+	Latitude        float32 `json:"latitude"`
 	LocationUUID    *string `json:"locationUUID,omitempty"`
+	Longitude       float32 `json:"longitude"`
 	Name            string  `json:"name"`
 
 	// ReservedQuantity The quantity of the product reserved at this location
@@ -61,13 +65,15 @@ type ProductLocationInventory struct {
 
 // ProductStock defines model for ProductStock.
 type ProductStock struct {
-	CreatedAt   *time.Time `json:"createdAt,omitempty"`
-	Name        string     `json:"name"`
-	Price       float32    `json:"price"`
-	ProductUUID *string    `json:"productUUID,omitempty"`
-	Quantity    int        `json:"quantity"`
-	UpdatedAt   *time.Time `json:"updatedAt,omitempty"`
-	Weight      float32    `json:"weight"`
+	AvailableQuantity int        `json:"availableQuantity"`
+	CreatedAt         *time.Time `json:"createdAt,omitempty"`
+	DamagedQuantity   int        `json:"damagedQuantity"`
+	Name              string     `json:"name"`
+	Price             float32    `json:"price"`
+	ProductUUID       *string    `json:"productUUID,omitempty"`
+	ReservedQuantity  int        `json:"reservedQuantity"`
+	UpdatedAt         *time.Time `json:"updatedAt,omitempty"`
+	Weight            float32    `json:"weight"`
 }
 
 // ProductStocks defines model for ProductStocks.

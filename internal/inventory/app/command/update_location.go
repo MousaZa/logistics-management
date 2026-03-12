@@ -13,6 +13,8 @@ type UpdateLocation struct {
 	Name         *string
 	Address      *string
 	City         *string
+	Longitude    *float32
+	Latitude     *float32
 }
 
 type updateLocationHandler struct {
@@ -35,6 +37,12 @@ func (h updateLocationHandler) Handle(ctx context.Context, cmd UpdateLocation) e
 		}
 		if cmd.City != nil && *cmd.City != "" {
 			l.City = *cmd.City
+		}
+		if cmd.Longitude != nil && *cmd.Longitude != 0 {
+			l.Longitude = *cmd.Longitude
+		}
+		if cmd.Latitude != nil && *cmd.Latitude != 0 {
+			l.Latitude = *cmd.Latitude
 		}
 		return l, nil
 	})

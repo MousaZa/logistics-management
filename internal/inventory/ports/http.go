@@ -71,6 +71,7 @@ func (h HttpServer) UpdateLocation(w http.ResponseWriter, r *http.Request, locat
 	body, err := io.ReadAll(r.Body)
 	err = json.Unmarshal(body, &loc)
 	if err != nil {
+		fmt.Println(err)
 		httperr.BadRequest("invalid-request-body", err, w, r)
 		return
 	}

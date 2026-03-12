@@ -49,12 +49,13 @@ func (p LocationsRepository) GetAllLocations(ctx context.Context) ([]*locations.
 }
 
 func (p LocationsRepository) GetLocation(ctx context.Context, locationUUID string) (*locations.Location, error) {
-	query := `SELECT location_uuid, name, address, city, created_at, updated_at FROM locations WHERE location_uuid = $1`
+	query := `SELECT location_uuid, name, address, city,ST_Y(coordinates::geometry) AS longitude, 
+    ST_X(coordinates::geometry) AS latitude, created_at, updated_at FROM locations WHERE location_uuid = $1`
 
 	row := p.db.QueryRow(ctx, query, locationUUID)
 
 	var l locations.Location
-	err := row.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
+	err := row.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.Longitude, &l.Latitude, &l.CreatedAt, &l.UpdatedAt)
 	if err != nil {
 		return nil, fmt.Errorf("unable to scan locations: %w", err)
 	}
@@ -63,12 +64,13 @@ func (p LocationsRepository) GetLocation(ctx context.Context, locationUUID strin
 }
 
 func (p LocationsRepository) UpdateLocation(ctx context.Context, locationUUID string, updateFunc func(ctx context.Context, p *locations.Location) (*locations.Location, error)) error {
-	query := `SELECT location_uuid, name, address, city, created_at, updated_at FROM locations WHERE location_uuid = $1`
+	query := `SELECT location_uuid, name, address, city,ST_Y(coordinates::geometry) AS longitude, 
+    ST_X(coordinates::geometry) AS latitude, created_at, updated_at FROM locations WHERE location_uuid = $1`
 
 	row := p.db.QueryRow(ctx, query, locationUUID)
 
 	var l locations.Location
-	err := row.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.CreatedAt, &l.UpdatedAt)
+	err := row.Scan(&l.LocationUUID, &l.Name, &l.Address, &l.City, &l.Longitude, &l.Latitude, &l.CreatedAt, &l.UpdatedAt)
 	if err != nil {
 		return fmt.Errorf("unable to scan locations: %w", err)
 	}
@@ -78,8 +80,8 @@ func (p LocationsRepository) UpdateLocation(ctx context.Context, locationUUID st
 		return fmt.Errorf("update function failed: %w", err)
 	}
 
-	updateQuery := `UPDATE locations SET name = $1, address = $2, city = $3, updated_at = NOW() WHERE location_uuid = $4`
-	_, err = p.db.Exec(ctx, updateQuery, updatedLocation.Name, updatedLocation.Address, updatedLocation.City, locationUUID)
+	updateQuery := `UPDATE locations SET name = $1, address = $2, city = $3, coordinates = ST_SetSRID(ST_MakePoint($4, $5), 4326)::geography, updated_at = NOW() WHERE location_uuid = $6`
+	_, err = p.db.Exec(ctx, updateQuery, updatedLocation.Name, updatedLocation.Address, updatedLocation.City, updatedLocation.Longitude, updatedLocation.Latitude, locationUUID)
 	if err != nil {
 		return fmt.Errorf("unable to update locations: %w", err)
 	}
